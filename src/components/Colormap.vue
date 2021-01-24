@@ -1,17 +1,17 @@
 <template>
-<div class="colormap">
-  <h3>Colormap</h3>
-</div>
+  <div class="colormap">
+    <h3>Colormap</h3>
+  </div>
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import {defineComponent} from 'vue'
 
 export default defineComponent({
-name: "Colormap"
+  name: "Colormap"
 })
 </script>
 
-<style scoped>
+<style scoped lang="stylus">
 
 </style>
