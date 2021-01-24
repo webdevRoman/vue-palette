@@ -1,0 +1,70 @@
+@import 'vars'
+
+a
+  color $cFontDark
+  border-bottom 3px solid transparent
+  transition .2s
+  &:hover
+    border-bottom 3px solid $cActive
+
+html
+  font-family: $font
+  font-size: $fzText
+  color: $cFontDark
+  height: 100%
+  @media screen and (max-width: $wL)
+    font-size: 16px
+  @media screen and (max-width: $wM)
+    font-size: 15px
+  @media screen and (max-width: $wS)
+    font-size: 14px
+
+body
+  overflow-x: hidden
+
+// section
+// position: relative
+// padding: 40px 0
+// @media screen and (max-width: $wL)
+// padding: 36px 0
+// @media screen and (max-width: $wM)
+// padding: 28px 0
+// @media screen and (max-width: $wS)
+// padding: 20px 0
+
+.container
+  width: 100%
+  display: flex
+  flex: 0 0 auto
+  flex-wrap: wrap
+  position: relative
+  margin: 0 auto
+  max-width: $wcXL
+  @media screen and (max-width: $wXL)
+    max-width: $wcL
+  @media screen and (max-width: $wL)
+    max-width: $wcM
+  @media screen and (max-width: $wM)
+    max-width: $wcS
+  @media screen and (max-width: $wS)
+    max-width: $wcXS
+
+// .wrapper
+// display: flex
+// flex-direction: column
+// margin: 0 auto
+// min-height: 100vh
+// min-width: 100vw
+
+// .content-wrapper
+// display: flex
+// flex-direction: column
+// min-height: 100vh
+
+.title
+  font-size: 48px
+  font-weight: bold
+
+.text
+  font-size: 18px
+  line-height: 1.5
