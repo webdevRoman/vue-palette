@@ -19,14 +19,22 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import {defineComponent} from 'vue'
+import {usePaletteService} from '@/use/paletteService'
 
 export default defineComponent({
   name: "Home",
-  methods: {
-    onSelectFile(event) {
-      console.log(event.files[0])
+
+  setup() {
+    const { palette, readPaletteFromFile } = usePaletteService()
+
+    const onSelectFile = async (event: any) => {
+      await readPaletteFromFile(event.files[0])
+    }
+
+    return {
+      onSelectFile
     }
   }
 })
