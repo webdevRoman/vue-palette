@@ -19,4 +19,5 @@ export default defineComponent({
 <style lang="stylus">
 @import './assets/styles/reset'
 @import './assets/styles/main'
+@import './assets/styles/primevue'
 </style>

@@ -1,5 +1,5 @@
 export enum LineStyles {
-  INVISIBLE = 'Невидимая',
+  HIDDEN = 'Невидимая',
   SOLID = 'Сплошная',
   DASHED = 'Пунктирная',
   DOTTED = 'Точечная'

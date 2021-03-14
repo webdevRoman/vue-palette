@@ -2,6 +2,7 @@
   <div class="home">
     <h2 class="title home-title">Vue Palette</h2>
     <p class="text home-descr">Выберите файл для редактирования палитры или создайте новую палитру.</p>
+
     <div class="home-options">
       <div class="home-option">
         <FileUpload class="home-option__upload"
@@ -12,52 +13,56 @@
           </template>
         </FileUpload>
       </div>
+
       <div class="home-option">
         <Button label="Создать палитру" icon="pi pi-plus"/>
       </div>
     </div>
+
+    <LevelsDialog/>
   </div>
 </template>
 
 <script lang="ts">
 import {defineComponent} from 'vue'
-import {usePaletteService} from '@/use/paletteService'
+import LevelsDialog from '@/components/LevelsDialog.vue'
 
 export default defineComponent({
-  name: "Home",
 
-  setup() {
-    const { palette, readPaletteFromFile } = usePaletteService()
+  name: 'Home',
 
-    const onSelectFile = async (event: any) => {
-      await readPaletteFromFile(event.files[0])
-    }
+  components: {
+    LevelsDialog
+  },
 
-    return {
-      onSelectFile
+  methods: {
+    async onSelectFile(event: any) {
+      await this.$store.dispatch('READ_PALETTE_FROM_FILE', event.files[0])
+      this.$store.dispatch('SHOW_LEVELS_DIALOG')
     }
   }
+
 })
 </script>
 
 <style scoped lang="stylus">
 .home
   display flex
-  justify-content center
   align-items center
   flex-direction column
   min-height 100vh
+  padding 50px 0
 
   &-title
     margin-bottom 20px
 
   &-descr
-    margin-bottom 50px
+    margin-bottom 75px
 
   &-options
     display: flex;
     justify-content space-between
-    align-items center
+    align-items: flex-start
 
   &-option
     display flex
