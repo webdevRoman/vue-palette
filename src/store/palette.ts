@@ -1,4 +1,4 @@
-import {State} from '@/models/State'
+import {State} from '@/store/State'
 import {Palette} from '@/models/Palette'
 import {LineStyles} from '@/models/LineStyles'
 import {Color} from '@/models/Color'
@@ -40,6 +40,7 @@ export default {
           fillColor: new Color(levelFields[4])
         } as Level)
       })
+      palette.levels.sort((a, b) => a.value - b.value)
 
       commit('SET_PALETTE', palette)
     }

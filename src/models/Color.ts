@@ -1,7 +1,7 @@
 export class Color {
 
   rgb: string
-  hex: string
+  hex: string   // без '#'
 
   red: number
   green: number
@@ -13,7 +13,7 @@ export class Color {
     this.green = parseInt(rgbArr[1])
     this.blue = parseInt(rgbArr[2].substring(0, rgbArr[2].length - 1))
     this.rgb = rgb
-    this.hex = '#' + this.componentToHex(this.red) + this.componentToHex(this.green) + this.componentToHex(this.blue)
+    this.hex = this.componentToHex(this.red) + this.componentToHex(this.green) + this.componentToHex(this.blue)
   }
 
   private componentToHex(c: number): string {

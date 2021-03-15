@@ -23,7 +23,7 @@
           <template #body="{data}">
             <Button class="p-button-text p-button-plain cell">
               <div class="cell-line"
-                   :style="`border-top: ${data.lineWidth}px ${data.lineStyle.toLowerCase()} ${data.lineColor.hex}`">
+                   :style="`border-top: ${data.lineWidth}px ${data.lineStyle.toLowerCase()} #${data.lineColor.hex}`">
               </div>
             </Button>
           </template>
@@ -34,7 +34,7 @@
             <Button label="Цвет закраски" class="cell cell-header p-button-text p-button-plain"/>
           </template>
           <template #body="{data}">
-            <Button class="cell cell-color" :style="`background-color: ${data.fillColor.hex}`"/>
+            <ColorPicker v-model="data.fillColor.hex" class="cell"/>
           </template>
         </Column>
       </DataTable>
@@ -104,9 +104,6 @@ export default defineComponent({
 
   &-header
     font-weight 500
-
-  &-color
-    border 1px solid $cFontDark
 
   &-line
     width 100%
