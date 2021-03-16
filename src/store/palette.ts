@@ -13,6 +13,10 @@ export default {
   mutations: {
     SET_PALETTE(state: State, palette: Palette) {
       state.palette = palette
+    },
+
+    SORT_LEVELS(state: State) {
+      state.palette.levels.sort((a, b) => a.value - b.value)
     }
   },
 
@@ -37,12 +41,18 @@ export default {
           lineStyle: Object.keys(LineStyles).find(it => it === levelFields[1].toUpperCase()),
           lineWidth: parseInt(levelFields[2]),
           lineColor: new Color(levelFields[3]),
-          fillColor: new Color(levelFields[4])
+          fillColor: new Color(levelFields[4]),
+          editValue: false,
+          wrongValue: false
         } as Level)
       })
-      palette.levels.sort((a, b) => a.value - b.value)
 
       commit('SET_PALETTE', palette)
+      commit('SORT_LEVELS')
+    },
+
+    SORT_LEVELS({commit}) {
+      commit('SORT_LEVELS')
     }
   },
 

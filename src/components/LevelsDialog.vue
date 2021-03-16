@@ -1,5 +1,5 @@
 <template>
-  <Dialog header="Линии уровня" v-model:visible="showLevelsDialog" modal dismissableMask maximizable>
+  <Dialog header="Линии уровня" v-model:visible="showLevelsDialog" modal maximizable>
 
     <div class="flex flex-horizontal">
 
@@ -12,7 +12,15 @@
             <Button label="Значение" class="cell cell-header p-button-text p-button-plain"/>
           </template>
           <template #body="{data}">
-            <Button :label="data.value.toString()" class="cell p-button-text p-button-plain"/>
+            <div v-if="data.editValue" class="level-value">
+              <InputNumber v-model="data.value"
+                           :class="`level-value__input ${data.wrongValue ? 'level-value__input_wrong' : ''}`"/>
+              <Button icon="pi pi-check" class="p-button-success level-value__btn"
+                      @click="changeLevelValue(data)"/>
+            </div>
+            <Button v-else
+                    :label="data.value.toString()" class="cell p-button-text p-button-plain"
+                    @click="data.editValue = true"/>
           </template>
         </Column>
 
@@ -57,6 +65,7 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {LineStyles} from '@/models/LineStyles'
+import {Level} from '@/models/Level'
 
 export default defineComponent({
 
@@ -68,6 +77,18 @@ export default defineComponent({
       LineStyles: LineStyles,
       deleteMode: false,
       selectedLevels: null
+    }
+  },
+
+  methods: {
+    changeLevelValue(level: Level) {
+      if (level.value) {
+        level.editValue = false
+        level.wrongValue = false
+        this.$store.dispatch('SORT_LEVELS')
+      } else {
+        level.wrongValue = true
+      }
     }
   },
 
@@ -97,26 +118,30 @@ export default defineComponent({
 </script>
 
 <style scoped lang="stylus">
-@import '../assets/styles/vars'
-
 .cell
   width 100%
-
   &-header
     font-weight 500
-
   &-line
     width 100%
     height 10px
     margin-top 10px
 
+.level
+  &-value
+    display flex
+    justify-content space-between
+    align-items center
+    margin-right 50px
+    &__btn
+      flex-shrink 0
+      margin-left 5px
+
 .controls
   margin-left 20px
-
   button
     width 100%
     margin-bottom 10px
-
     &:last-child
       margin-bottom 0
 </style>

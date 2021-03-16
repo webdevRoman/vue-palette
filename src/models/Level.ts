@@ -7,4 +7,6 @@ export interface Level {
   lineWidth: number;
   lineColor: Color;
   fillColor: Color;
+  editValue: boolean;
+  wrongValue: boolean;
 }

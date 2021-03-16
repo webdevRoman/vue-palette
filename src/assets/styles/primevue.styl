@@ -1,3 +1,5 @@
+@import './vars'
+
 .p-dialog
   max-width: 90%
   &-maximized
@@ -6,3 +8,13 @@
 .cell
   .p-colorpicker-preview
     width 100%
+
+.level
+  &-value
+    &__input
+      max-width 100%
+      .p-inputnumber-input
+        max-width 100%
+        text-align center
+      &_wrong .p-inputnumber-input
+        border 1px solid $danger-color

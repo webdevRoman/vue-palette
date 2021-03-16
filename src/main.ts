@@ -10,6 +10,7 @@ import Dialog from 'primevue/dialog'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import ColorPicker from 'primevue/colorpicker'
+import InputNumber from 'primevue/inputnumber'
 
 import 'primevue/resources/themes/saga-blue/theme.css'
 import 'primevue/resources/primevue.min.css'
@@ -23,5 +24,6 @@ app.component('Dialog', Dialog)
 app.component('DataTable', DataTable)
 app.component('Column', Column)
 app.component('ColorPicker', ColorPicker)
+app.component('InputNumber', InputNumber)
 
 app.mount('#app')
