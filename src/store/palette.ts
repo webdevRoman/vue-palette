@@ -7,7 +7,7 @@ import {Level} from '@/models/Level'
 export default {
 
   state: () => ({
-    palette: null as Palette
+    palette: null
   }),
 
   mutations: {
@@ -17,6 +17,11 @@ export default {
 
     SORT_LEVELS(state: State) {
       state.palette.levels.sort((a, b) => a.value - b.value)
+    },
+
+    SET_LEVEL_VALUE(state: State, level: Level) {
+      const editableLevel = state.palette.levels.find(it => it.id === level.id)
+      editableLevel.value = level.value
     }
   },
 
@@ -34,9 +39,11 @@ export default {
         fileText: fileText
       } as Palette
 
+      let id = 0
       levelsLines.forEach(line => {
         const levelFields: string[] = line.split(' ')
         palette.levels.push({
+          id: id,
           value: parseInt(levelFields[0]),
           lineStyle: Object.keys(LineStyles).find(it => it === levelFields[1].toUpperCase()),
           lineWidth: parseInt(levelFields[2]),
@@ -45,10 +52,15 @@ export default {
           editValue: false,
           wrongValue: false
         } as Level)
+        id++
       })
 
       commit('SET_PALETTE', palette)
       commit('SORT_LEVELS')
+    },
+
+    SET_LEVEL_VALUE({commit}, level: Level) {
+      commit('SET_LEVEL_VALUE', level)
     },
 
     SORT_LEVELS({commit}) {

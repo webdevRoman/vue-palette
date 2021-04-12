@@ -1,9 +1,9 @@
 <template>
-  <Dialog header="Линии уровня" v-model:visible="showLevelsDialog" modal maximizable>
+  <Dialog header="Линии уровня" v-model:visible="showLevelsDialog" modal maximizable :closeOnEscape="false">
 
     <div class="flex flex-horizontal">
 
-      <DataTable class="flex-75" :value="levels" v-model:selection="selectedLevels" dataKey="value">
+      <DataTable class="p-datatable-sm flex-75" :value="levels" v-model:selection="selectedLevels" dataKey="value">
         <Column :selectionMode="deleteMode ? 'multiple' : 'none'"
                 :style="`width: ${deleteMode ? '60' : '0'}px`"></Column>
 
@@ -12,15 +12,7 @@
             <Button label="Значение" class="cell cell-header p-button-text p-button-plain"/>
           </template>
           <template #body="{data}">
-            <div v-if="data.editValue" class="level-value">
-              <InputNumber v-model="data.value"
-                           :class="`level-value__input ${data.wrongValue ? 'level-value__input_wrong' : ''}`"/>
-              <Button icon="pi pi-check" class="p-button-success level-value__btn"
-                      @click="changeLevelValue(data)"/>
-            </div>
-            <Button v-else
-                    :label="data.value.toString()" class="cell p-button-text p-button-plain"
-                    @click="data.editValue = true"/>
+            <LevelValue :props-level="data"/>
           </template>
         </Column>
 
@@ -42,7 +34,7 @@
             <Button label="Цвет закраски" class="cell cell-header p-button-text p-button-plain"/>
           </template>
           <template #body="{data}">
-            <ColorPicker v-model="data.fillColor.hex" class="cell"/>
+            <ColorPicker v-model="data.fillColor.hex" class="cell cell-fill"/>
           </template>
         </Column>
       </DataTable>
@@ -64,12 +56,18 @@
 
 <script lang="ts">
 import {defineComponent} from 'vue'
+import LevelValue from '@/components/LevelValue.vue'
 import {LineStyles} from '@/models/LineStyles'
 import {Level} from '@/models/Level'
 
 export default defineComponent({
 
   name: 'LevelsDialog',
+
+  components: {
+    LevelValue
+  },
+
 
   data() {
     return {
@@ -93,11 +91,11 @@ export default defineComponent({
   },
 
   computed: {
-    showStoreLevelsDialog() {
+    showStoreLevelsDialog(): boolean {
       return this.$store.getters.showLevelsDialog
     },
 
-    levels() {
+    levels(): Level[] {
       return this.$store.getters.levels
     }
   },
@@ -126,16 +124,8 @@ export default defineComponent({
     width 100%
     height 10px
     margin-top 10px
-
-.level
-  &-value
-    display flex
-    justify-content space-between
-    align-items center
-    margin-right 50px
-    &__btn
-      flex-shrink 0
-      margin-left 5px
+  &-fill
+    transform translateY(-7px)
 
 .controls
   margin-left 20px
