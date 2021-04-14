@@ -1,7 +1,7 @@
 <template>
-  <Dialog header="Линии уровня" v-model:visible="showLevelsDialog" modal maximizable :closeOnEscape="false">
+  <Dialog class="dialog-levels" header="Линии уровня" v-model:visible="showLevelsDialog" modal maximizable :closeOnEscape="false">
 
-    <div class="flex flex-horizontal">
+    <div class="flex flex-sb">
 
       <DataTable class="p-datatable-sm flex-75" :value="levels" v-model:selection="selectedLevels" dataKey="value">
         <Column :selectionMode="deleteMode ? 'multiple' : 'none'"
@@ -9,7 +9,8 @@
 
         <Column field="value">
           <template #header>
-            <Button label="Значение" class="cell cell-header p-button-text p-button-plain"/>
+            <Button label="Значение" class="cell cell-header p-button-text p-button-plain"
+                    @click="showScaleDialog"/>
           </template>
           <template #body="{data}">
             <LevelValue :props-level="data"/>
@@ -51,12 +52,14 @@
 
     </div>
 
+    <ScaleDialog/>
   </Dialog>
 </template>
 
 <script lang="ts">
 import {defineComponent} from 'vue'
 import LevelValue from '@/components/LevelValue.vue'
+import ScaleDialog from '@/components/ScaleDialog.vue'
 import {LineStyles} from '@/models/LineStyles'
 import {Level} from '@/models/Level'
 
@@ -65,7 +68,8 @@ export default defineComponent({
   name: 'LevelsDialog',
 
   components: {
-    LevelValue
+    LevelValue,
+    ScaleDialog
   },
 
 
@@ -79,14 +83,8 @@ export default defineComponent({
   },
 
   methods: {
-    changeLevelValue(level: Level) {
-      if (level.value) {
-        level.editValue = false
-        level.wrongValue = false
-        this.$store.dispatch('SORT_LEVELS')
-      } else {
-        level.wrongValue = true
-      }
+    showScaleDialog() {
+      this.$store.dispatch('SHOW_SCALE_DIALOG')
     }
   },
 
@@ -118,20 +116,25 @@ export default defineComponent({
 <style scoped lang="stylus">
 .cell
   width 100%
+
   &-header
     font-weight 500
+
   &-line
     width 100%
     height 10px
     margin-top 10px
+
   &-fill
     transform translateY(-7px)
 
 .controls
   margin-left 20px
+
   button
     width 100%
     margin-bottom 10px
+
     &:last-child
       margin-bottom 0
 </style>

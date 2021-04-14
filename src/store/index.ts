@@ -4,12 +4,14 @@ import {createStore} from 'vuex'
 import {State} from '@/store/State'
 import levelsDialog from '@/store/levelsDialog'
 import palette from '@/store/palette'
-// import editableLevel from '@/store/editableLevel'
+import scale from '@/store/scale'
+import errors from '@/store/errors'
 
 export default createStore<State>({
   modules: {
+    errors,
     levelsDialog,
     palette,
-    // editableLevel
+    scale
   }
 })

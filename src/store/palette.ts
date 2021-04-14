@@ -26,7 +26,7 @@ export default {
   },
 
   actions: {
-    async READ_PALETTE_FROM_FILE({commit}, file: File) {
+    async READ_PALETTE_FROM_FILE({commit, dispatch}, file: File) {
       const fileText: string = await file.text()
       const fileTextLines: string[] = fileText.split('\n')
       const levelsLines: string[] = [...fileTextLines]
@@ -57,6 +57,7 @@ export default {
 
       commit('SET_PALETTE', palette)
       commit('SORT_LEVELS')
+      dispatch('SET_SCALE_LIMITS')
     },
 
     SET_LEVEL_VALUE({commit}, level: Level) {
