@@ -43,16 +43,13 @@ export default {
       levelsLines.forEach(line => {
         const levelFields: string[] = line.split(' ')
         palette.levels.push({
-          id: id,
+          id: id++,
           value: parseInt(levelFields[0]),
           lineStyle: Object.keys(LineStyles).find(it => it === levelFields[1].toUpperCase()),
           lineWidth: parseInt(levelFields[2]),
           lineColor: new Color(levelFields[3]),
-          fillColor: new Color(levelFields[4]),
-          editValue: false,
-          wrongValue: false
+          fillColor: new Color(levelFields[4])
         } as Level)
-        id++
       })
 
       commit('SET_PALETTE', palette)

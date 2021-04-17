@@ -9,41 +9,42 @@
 
       <div class="scale-left">
         <div class="scale-input p-field">
-          <span class="p-float-label">
-            <InputNumber id="min" v-model="min"/>
-            <label for="min">Минимум</label>
-          </span>
+            <span class="p-float-label">
+              <InputNumber id="min" v-model="min" :class="`${wrongMin ? 'input_wrong' : ''}`" @input="wrongMin = false"/>
+              <label for="min">Минимум</label>
+            </span>
         </div>
 
         <div class="scale-input p-field">
-          <span class="p-float-label">
-            <InputNumber id="max" v-model="max"/>
-            <label for="max">Максимум</label>
-          </span>
+            <span class="p-float-label">
+              <InputNumber id="max" v-model="max" :class="`${wrongMax ? 'input_wrong' : ''}`" @input="wrongMax = false"/>
+              <label for="max">Максимум</label>
+            </span>
         </div>
 
         <div class="scale-input p-field">
-          <span class="p-float-label">
-            <InputNumber id="interval" v-model="interval"/>
-            <label for="interval">Интервал</label>
-          </span>
+            <span class="p-float-label">
+              <InputNumber id="interval" v-model="interval"
+                           :class="`${wrongInterval ? 'input_wrong' : ''}`" @input="wrongInterval = false"/>
+              <label for="interval">Интервал</label>
+            </span>
         </div>
       </div>
 
       <div class="scale-right flex flex-sb">
         <div class="scale-checkboxes">
           <div class="scale-checkbox">
-            <Checkbox class="scale-checkbox__box" id="scale-lines" v-model="scaleLines" :binary="true"/>
-            <label class="scale-checkbox__label" for="scale-lines">Масштабировать цвета линий уровня</label>
+            <Checkbox class="scale-checkbox__box" id="scale-lines" v-model="isScaleLines" :binary="true"/>
+            <label class="scale-checkbox__label" for="scale-lines">Масштабировать линии уровня</label>
           </div>
           <div class="scale-checkbox">
-            <Checkbox class="scale-checkbox__box" id="scale-filling" v-model="scaleFilling" :binary="true"/>
+            <Checkbox class="scale-checkbox__box" id="scale-filling" v-model="isScaleFilling" :binary="true"/>
             <label class="scale-checkbox__label" for="scale-filling">Масштабировать цвета закраски между линиями
               уровня</label>
           </div>
         </div>
 
-        <Button label="Применить"/>
+        <Button label="Применить" @click="checkScaleForm" :disabled="wrongMin || wrongMax || wrongInterval"/>
       </div>
 
     </div>
@@ -54,6 +55,8 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {Level} from '@/models/Level'
+import {Field, Validator, ValidationError} from '@/store/errors'
+import {ScaleInfo} from '@/store/scale'
 
 export default defineComponent({
 
@@ -65,8 +68,58 @@ export default defineComponent({
       min: null,
       max: null,
       interval: null,
-      scaleLines: false,
-      scaleFilling: false
+      isScaleLines: false,
+      isScaleFilling: false,
+      wrongMin: false,
+      wrongMax: false,
+      wrongInterval: false
+    }
+  },
+
+  methods: {
+    async checkScaleForm() {
+      try {
+        await this.$store.dispatch('CHECK_FIELDS', [
+          {name: 'scale_min', value: this.min, validators: [Validator.EMPTY]} as Field,
+          {name: 'scale_max', value: this.max, validators: [Validator.EMPTY]} as Field,
+          {name: 'scale_interval', value: this.interval, validators: [Validator.EMPTY]} as Field
+        ])
+        this.wrongMin = false
+        this.wrongMax = false
+        this.wrongInterval = false
+      } catch (error) {
+        if (error.length && error[0].field) {
+          error.forEach(err => {
+            if (err.field.name === 'scale_min') {
+              this.wrongMin = true
+            }
+            if (err.field.name === 'scale_max') {
+              this.wrongMax = true
+            }
+            if (err.field.name === 'scale_interval') {
+              this.wrongInterval = true
+            }
+          })
+        }
+      }
+
+      if (!this.wrongMin && !this.wrongMax && !this.wrongInterval) {
+        if (this.min > this.max) {
+          this.wrongMin = true
+          this.wrongMax = true
+        } else if (this.max - this.min < this.interval) {
+          this.wrongInterval = true
+        }
+      }
+
+      this.$store.dispatch('SCALE_LEVELS', {
+        scaleMin: this.min,
+        scaleMax: this.max,
+        scaleInterval: this.interval,
+        isScaleLines: this.isScaleLines,
+        isScaleFilling: this.isScaleFilling
+      } as ScaleInfo)
+      this.$store.dispatch('HIDE_SCALE_DIALOG')
     }
   },
 

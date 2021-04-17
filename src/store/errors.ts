@@ -38,30 +38,37 @@ export default {
       }
     },
 
-    CLEAR_ERRORS(state: State) {
-      state.errors = []
-    }
+    // CLEAR_ERRORS(state: State) {
+    //   state.errors = []
+    // }
   },
 
   actions: {
-    CHECK_FIELD({commit}, field: Field) {
+    CHECK_FIELDS({commit}, fields: Field[]) {
       return new Promise((resolve, reject) => {
-        field.validators.forEach(validator => {
-          let validationError: ValidationError;
-          switch (validator) {
-            case Validator.EMPTY:
-              validationError = {field, message: 'Заполните поле', validator: Validator.EMPTY}
-              if (field.value) {
-                commit('REMOVE_ERROR', validationError)
-                resolve()
-              } else {
-                commit('ADD_ERROR', validationError)
-                reject()
-              }
-              break
-            default:
-              reject('No such validator')
-              break;
+        const validationErrors: ValidationError[] = []
+        fields.forEach(field => {
+          field.validators.forEach(validator => {
+            let validationError: ValidationError;
+            switch (validator) {
+              case Validator.EMPTY:
+                validationError = {field, message: 'Заполните поле', validator: Validator.EMPTY}
+                if (field.value.toString.length) {
+                  commit('REMOVE_ERROR', validationError)
+                } else {
+                  commit('ADD_ERROR', validationError)
+                  validationErrors.push(validationError)
+                }
+                break
+              default:
+                console.error('No such validator')
+                break;
+            }
+          })
+          if (validationErrors.length) {
+            reject(validationErrors)
+          } else {
+            resolve()
           }
         })
       })
@@ -71,9 +78,9 @@ export default {
       commit('REMOVE_ERROR', validationError)
     },
 
-    CLEAR_ERRORS({commit}) {
-      commit('CLEAR_ERRORS')
-    }
+    // CLEAR_ERRORS({commit}) {
+    //   commit('CLEAR_ERRORS')
+    // }
   },
 
   getters: {

@@ -3,7 +3,7 @@
 
     <div v-if="editMode" class="level-value">
       <InputNumber v-model="level.value"
-                   :class="`level-value__input ${wrongValue ? 'level-value__input_wrong' : ''}`"
+                   :class="`level-value__input ${wrongValue ? 'input_wrong' : ''}`"
                    @keyup.enter="changeLevelValue"
                    @keyup.esc="resetLevelValue"/>
       <Button icon="pi pi-times" class="p-button-danger level-value__btn"
@@ -56,14 +56,12 @@ export default defineComponent({
     async checkValue() {
       try {
         await this.$store.dispatch(
-            'CHECK_FIELD',
-            {name: 'level_' + this.level.id, value: this.level.value, validators: [Validator.EMPTY]} as Field
+            'CHECK_FIELDS',
+            [{name: 'level_' + this.level.id, value: this.level.value, validators: [Validator.EMPTY]} as Field]
         )
         this.wrongValue = false
       } catch (err) {
-        if (!err) {
-          this.wrongValue = true
-        }
+        this.wrongValue = true
       }
     },
 

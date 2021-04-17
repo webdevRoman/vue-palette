@@ -11,4 +11,6 @@ export interface State {
   scaleMin: number;
   scaleMax: number;
   scaleInterval: number;
+  isScaleLines: boolean;
+  isScaleFilling: boolean;
 }
