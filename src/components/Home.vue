@@ -20,6 +20,7 @@
     </div>
 
     <LevelsDialog/>
+    <Toast position="bottom-right" group="br" />
   </div>
 </template>
 
@@ -37,6 +38,10 @@ export default defineComponent({
 
   methods: {
     async onSelectFile(event: any) {
+      if (event.files.length > 1) {
+        this.$toast.add({severity: 'error', summary: 'Ошибка', detail:'Выберите только один файл', group: 'br', life: 3000})
+        return
+      }
       await this.$store.dispatch('READ_PALETTE_FROM_FILE', event.files[0])
       this.$store.dispatch('SHOW_LEVELS_DIALOG')
     }
