@@ -14,6 +14,8 @@ import InputNumber from 'primevue/inputnumber'
 import Checkbox from 'primevue/checkbox'
 import ToastService from 'primevue/toastservice'
 import Toast from 'primevue/toast'
+import Dropdown from 'primevue/dropdown'
+import Panel from 'primevue/panel'
 
 import 'primevue/resources/themes/saga-blue/theme.css'
 import 'primevue/resources/primevue.min.css'
@@ -30,5 +32,7 @@ app.component('ColorPicker', ColorPicker)
 app.component('InputNumber', InputNumber)
 app.component('Checkbox', Checkbox)
 app.component('Toast', Toast)
+app.component('Dropdown', Dropdown)
+app.component('Panel', Panel)
 
 app.mount('#app')

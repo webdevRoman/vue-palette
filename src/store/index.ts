@@ -6,12 +6,14 @@ import levelsDialog from '@/store/levelsDialog'
 import palette from '@/store/palette'
 import scale from '@/store/scale'
 import errors from '@/store/errors'
+import line from '@/store/line'
 
 export default createStore<State>({
   modules: {
     errors,
     levelsDialog,
     palette,
-    scale
+    scale,
+    line
   }
 })

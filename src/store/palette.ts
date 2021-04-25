@@ -22,6 +22,13 @@ export default {
     SET_LEVEL_VALUE(state: State, level: Level) {
       const editableLevel = state.palette.levels.find(it => it.id === level.id)
       editableLevel.value = level.value
+    },
+
+    UPDATE_LEVEL_LINE(state: State, lineProps: any) {
+      const level = state.palette.levels.find(level => level.id === lineProps.levelId)
+      level.lineStyle = LineStyles[lineProps.style]
+      level.lineColor = new Color(lineProps.color)
+      level.lineWidth = lineProps.width
     }
   },
 

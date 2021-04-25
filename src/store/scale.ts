@@ -122,6 +122,8 @@ const binarySearch = (data: Level[], target: number, start: number, end: number)
   }
 }
 
+
+
 export default {
 
   state: () => ({

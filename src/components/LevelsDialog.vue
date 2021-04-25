@@ -22,7 +22,7 @@
             <Button label="Линия" class="cell cell-header p-button-text p-button-plain"/>
           </template>
           <template #body="{data}">
-            <Button class="p-button-text p-button-plain cell">
+            <Button class="p-button-text p-button-plain cell" @click="showLineDialog(data)">
               <div class="cell-line"
                    :style="`border-top: ${data.lineWidth}px ${data.lineStyle.toLowerCase()} #${data.lineColor.hex}`">
               </div>
@@ -53,15 +53,17 @@
     </div>
 
     <ScaleDialog/>
+    <LineDialog/>
   </Dialog>
 </template>
 
 <script lang="ts">
 import {defineComponent} from 'vue'
-import LevelValue from '@/components/LevelValue.vue'
-import ScaleDialog from '@/components/ScaleDialog.vue'
 import {LineStyles} from '@/models/LineStyles'
 import {Level} from '@/models/Level'
+import LevelValue from '@/components/LevelValue.vue'
+import ScaleDialog from '@/components/ScaleDialog.vue'
+import LineDialog from '@/components/LineDialog.vue'
 
 export default defineComponent({
 
@@ -69,7 +71,8 @@ export default defineComponent({
 
   components: {
     LevelValue,
-    ScaleDialog
+    ScaleDialog,
+    LineDialog
   },
 
 
@@ -85,6 +88,10 @@ export default defineComponent({
   methods: {
     showScaleDialog() {
       this.$store.dispatch('SHOW_SCALE_DIALOG')
+    },
+
+    showLineDialog(level: Level) {
+      this.$store.dispatch('SHOW_LINE_DIALOG', level)
     }
   },
 

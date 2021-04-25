@@ -9,25 +9,25 @@
 
       <div class="scale-left">
         <div class="scale-input p-field">
-            <span class="p-float-label">
-              <InputNumber id="min" v-model="min" :class="`${wrongMin ? 'input_wrong' : ''}`" @input="wrongMin = false"/>
-              <label for="min">Минимум</label>
-            </span>
+          <span class="p-float-label">
+            <InputNumber id="min" v-model="min" :class="`${wrongMin ? 'input_wrong' : ''}`" @input="wrongMin = false"/>
+            <label for="min">Минимум</label>
+          </span>
         </div>
 
         <div class="scale-input p-field">
-            <span class="p-float-label">
-              <InputNumber id="max" v-model="max" :class="`${wrongMax ? 'input_wrong' : ''}`" @input="wrongMax = false"/>
-              <label for="max">Максимум</label>
-            </span>
+          <span class="p-float-label">
+            <InputNumber id="max" v-model="max" :class="`${wrongMax ? 'input_wrong' : ''}`" @input="wrongMax = false"/>
+            <label for="max">Максимум</label>
+          </span>
         </div>
 
         <div class="scale-input p-field">
-            <span class="p-float-label">
-              <InputNumber id="interval" v-model="interval"
-                           :class="`${wrongInterval ? 'input_wrong' : ''}`" @input="wrongInterval = false"/>
-              <label for="interval">Интервал</label>
-            </span>
+          <span class="p-float-label">
+            <InputNumber id="interval" v-model="interval"
+                         :class="`${wrongInterval ? 'input_wrong' : ''}`" @input="wrongInterval = false"/>
+            <label for="interval">Интервал</label>
+          </span>
         </div>
       </div>
 
@@ -101,14 +101,17 @@ export default defineComponent({
             }
           })
         }
+        return
       }
 
       if (!this.wrongMin && !this.wrongMax && !this.wrongInterval) {
         if (this.min > this.max) {
           this.wrongMin = true
           this.wrongMax = true
+          return
         } else if (this.max - this.min < this.interval) {
           this.wrongInterval = true
+          return
         }
       }
 

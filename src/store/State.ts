@@ -4,13 +4,17 @@ import {Level} from '@/models/Level'
 
 export interface State {
   errors: ValidationError[];
+
   showLevelsDialog: boolean;
   palette: Palette;
-  editableLevel: Level;
+
   showScaleDialog: boolean;
   scaleMin: number;
   scaleMax: number;
   scaleInterval: number;
   isScaleLines: boolean;
   isScaleFilling: boolean;
+
+  showLineDialog: boolean;
+  editableLevelLine: Level;
 }

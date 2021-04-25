@@ -53,7 +53,7 @@ export default {
             switch (validator) {
               case Validator.EMPTY:
                 validationError = {field, message: 'Заполните поле', validator: Validator.EMPTY}
-                if (field.value.toString.length) {
+                if (field.value?.toString.length) {
                   commit('REMOVE_ERROR', validationError)
                 } else {
                   commit('ADD_ERROR', validationError)
