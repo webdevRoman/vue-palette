@@ -15,8 +15,12 @@
     .p-dropdown-label
       width 175px
 
-  &-colormap .vue-slider-rail
-    background-color rgba(#000, 0.3)
+  &-colormap
+    .vue-slider-rail
+      background-color rgba(#000, 0.3)
+    .slider-deleting
+      .vue-slider-dot, .slider-dot, .slider-dot__shadow
+        transition none !important
 
 .cell
   .p-colorpicker-preview

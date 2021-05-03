@@ -16,18 +16,16 @@ interface ScalableLevel extends Level {
   scaleValue: number;
 }
 
-export const formatLevelsToScalable = (levels: Level[]): ScalableLevel[] => {
-  const levelsMin = levels[0].value
-  const levelsMax = levels[levels.length - 1].value
-  const scalableLevels: ScalableLevel[] = []
+export const countPerCent = (value: number, min: number, max: number): number => (value - min) / (max - min) * 100
 
+export const formatLevelsToScalable = (levels: Level[]): ScalableLevel[] => {
+  const scalableLevels: ScalableLevel[] = []
   levels.forEach(level => {
     scalableLevels.push({
       ...level,
-      scaleValue: (level.value - levelsMin) / (levelsMax - levelsMin)
+      scaleValue: countPerCent(level.value, levels[0].value, levels[levels.length - 1].value) / 100
     } as ScalableLevel)
   })
-
   return scalableLevels
 }
 

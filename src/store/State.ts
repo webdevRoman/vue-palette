@@ -20,5 +20,5 @@ export interface State {
   editableLevelLine: Level;
 
   showColormapDialog: boolean;
-  sliders: SliderDot[];
+  sliderDots: SliderDot[];
 }

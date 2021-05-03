@@ -7,40 +7,40 @@ export default {
 
   state: () => ({
     showColormapDialog: false,
-    sliders: null
+    sliderDots: null
   }),
 
   mutations: {
-    SHOW_COLORMAP_DIALOG(state: State, sliders: SliderDot[]) {
-      state.sliders = sliders
+    SHOW_COLORMAP_DIALOG(state: State, sliderDots: SliderDot[]) {
+      state.sliderDots = sliderDots
       state.showColormapDialog = true
     },
 
     HIDE_COLORMAP_DIALOG(state: State) {
       state.showColormapDialog = false
-      state.sliders = null
+      state.sliderDots = null
     }
   },
 
   actions: {
     SHOW_COLORMAP_DIALOG({commit, getters}, initiator: string) {
-      const sliders: SliderDot[] = []
+      const sliderDots: SliderDot[] = []
       const levels = formatLevelsToScalable(getters.levels)
       if (initiator === COLORMAP_FILLING) {
-        levels.forEach(level => sliders.push({
+        levels.forEach(level => sliderDots.push({
           value: level.value,
           perCentValue: level.scaleValue * 100,
           color: level.fillColor
         } as SliderDot))
       } else {
-        levels.forEach(level => sliders.push({
+        levels.forEach(level => sliderDots.push({
           value: level.value,
           perCentValue: level.scaleValue * 100,
           color: level.lineColor
         } as SliderDot))
       }
 
-      commit('SHOW_COLORMAP_DIALOG', sliders)
+      commit('SHOW_COLORMAP_DIALOG', sliderDots)
     },
 
     HIDE_COLORMAP_DIALOG({commit}) {
@@ -50,7 +50,7 @@ export default {
 
   getters: {
     showColormapDialog: (state: State) => state.showColormapDialog,
-    sliders: (state: State) => state.sliders
+    sliderDots: (state: State) => state.sliderDots
   }
 
 }
