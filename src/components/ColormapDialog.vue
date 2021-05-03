@@ -63,20 +63,6 @@ import {defineComponent} from 'vue'
 import {SliderDot} from '@/models/SliderDot'
 import {Color} from '@/models/Color'
 
-const recountPerCentValues = (sliders: SliderDot[]) => {
-  let sliderMin = sliders[0].value
-  let sliderMax = sliders[0].value
-  for (let i = 1; i < sliders.length; i++) {
-    if (sliders[i].value < sliderMin) {
-      sliderMin = sliders[i].value
-    }
-    if (sliders[i].value > sliderMax) {
-      sliderMax = sliders[i].value
-    }
-  }
-  sliders.forEach(slider => slider.perCentValue = (slider.value - sliderMin) / (sliderMax - sliderMin) * 100)
-}
-
 export default defineComponent({
 
   name: 'ColormapDialog',
@@ -98,19 +84,15 @@ export default defineComponent({
 
   methods: {
     setSliderValue() {
-      this.focusedSlider.value = this.sliderValues[this.focusedSliderIndex] = this.value;
-      if (this.value < this.sliderMin || this.value > this.sliderMax) {
-        if (this.value < this.sliderMin) {
-          this.sliderMin = this.value
-        } else {
-          this.sliderMax = this.value
-        }
-        recountPerCentValues(this.sliders)
-      } else {
-        this.focusedSlider.perCentValue = (this.value - this.sliderMin) / (this.sliderMax - this.sliderMin) * 100
+      if (this.value < this.sliderMin) {
+        this.value = this.sliderMin
+      } else if (this.value > this.sliderMax) {
+        this.value = this.sliderMax
       }
+      this.focusedSlider.value = this.sliderValues[this.focusedSliderIndex] = this.value
+      this.focusedSlider.perCentValue = this.position =
+          (this.value - this.sliderMin) / (this.sliderMax - this.sliderMin) * 100;
       (this.$refs.slider as any).setValue(this.sliderValues)
-      this.position = this.focusedSlider.perCentValue
     },
 
     setSliderPerCentValue() {
