@@ -1,7 +1,4 @@
 import {State} from '@/store/State'
-import {Palette} from '@/models/Palette'
-import {LineStyles} from '@/models/LineStyles'
-import {Color} from '@/models/Color'
 import {Level} from '@/models/Level'
 
 export default {

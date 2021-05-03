@@ -1,5 +1,5 @@
 <template>
-  <Dialog class="dialog-line" header="Редактирование линии" v-model:visible="showLineDialog" modal>
+  <Dialog class="dialog-line dialog-md" header="Редактирование линии" v-model:visible="showLineDialog" modal>
 
     <div class="flex flex-sb">
       <div class="line-left">
@@ -126,11 +126,7 @@ export default defineComponent({
         this.$store.dispatch('HIDE_LINE_DIALOG')
       } else {
         this.style = this.editableLevelLine?.lineStyle
-        this.color = {
-          r: this.editableLevelLine?.lineColor.red,
-          g: this.editableLevelLine?.lineColor.green,
-          b: this.editableLevelLine?.lineColor.blue
-        }
+        this.color = this.editableLevelLine?.lineColor.rgbObj
         this.width = this.editableLevelLine?.lineWidth
       }
     }

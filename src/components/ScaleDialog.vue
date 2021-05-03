@@ -1,5 +1,5 @@
 <template>
-  <Dialog class="dialog-scale" header="Масштабирование" v-model:visible="showScaleDialog" modal>
+  <Dialog class="dialog-scale dialog-md" header="Масштабирование" v-model:visible="showScaleDialog" modal>
 
     <div class="data-limits">
       Граничные значения данных: {{ levels[0].value }} - {{ levels[levels.length - 1].value }}

@@ -1,5 +1,6 @@
 <template>
-  <Dialog class="dialog-levels" header="Линии уровня" v-model:visible="showLevelsDialog" modal maximizable :closeOnEscape="false">
+  <Dialog class="dialog-levels dialog-xl" header="Линии уровня" v-model:visible="showLevelsDialog"
+          modal maximizable :closeOnEscape="false">
 
     <div class="flex flex-sb">
 
@@ -9,8 +10,7 @@
 
         <Column field="value">
           <template #header>
-            <Button label="Значение" class="cell cell-header p-button-text p-button-plain"
-                    @click="showScaleDialog"/>
+            <Button label="Значение" class="cell cell-header p-button-text p-button-plain" @click="showScaleDialog"/>
           </template>
           <template #body="{data}">
             <LevelValue :props-level="data"/>
@@ -32,7 +32,8 @@
 
         <Column field="fillColor">
           <template #header>
-            <Button label="Цвет закраски" class="cell cell-header p-button-text p-button-plain"/>
+            <Button label="Цвет закраски" class="cell cell-header p-button-text p-button-plain"
+                    @click="showColormapDialog(COLORMAP_FILLING)"/>
           </template>
           <template #body="{data}">
             <ColorPicker v-model="data.fillColor.hex" class="cell cell-fill"/>
@@ -54,6 +55,7 @@
 
     <ScaleDialog/>
     <LineDialog/>
+    <ColormapDialog/>
   </Dialog>
 </template>
 
@@ -64,6 +66,8 @@ import {Level} from '@/models/Level'
 import LevelValue from '@/components/LevelValue.vue'
 import ScaleDialog from '@/components/ScaleDialog.vue'
 import LineDialog from '@/components/LineDialog.vue'
+import ColormapDialog from '@/components/ColormapDialog.vue'
+import {COLORMAP_FILLING} from '@/models/Constants'
 
 export default defineComponent({
 
@@ -72,7 +76,8 @@ export default defineComponent({
   components: {
     LevelValue,
     ScaleDialog,
-    LineDialog
+    LineDialog,
+    ColormapDialog
   },
 
 
@@ -81,7 +86,8 @@ export default defineComponent({
       showLevelsDialog: false,
       LineStyles: LineStyles,
       deleteMode: false,
-      selectedLevels: null
+      selectedLevels: null,
+      COLORMAP_FILLING: COLORMAP_FILLING
     }
   },
 
@@ -92,6 +98,10 @@ export default defineComponent({
 
     showLineDialog(level: Level) {
       this.$store.dispatch('SHOW_LINE_DIALOG', level)
+    },
+
+    showColormapDialog(initiator: string) {
+      this.$store.dispatch('SHOW_COLORMAP_DIALOG', initiator)
     }
   },
 

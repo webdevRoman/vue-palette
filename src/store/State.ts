@@ -1,6 +1,7 @@
 import {ValidationError} from '@/store/errors'
 import {Palette} from '@/models/Palette'
 import {Level} from '@/models/Level'
+import {SliderDot} from '@/models/SliderDot'
 
 export interface State {
   errors: ValidationError[];
@@ -17,4 +18,7 @@ export interface State {
 
   showLineDialog: boolean;
   editableLevelLine: Level;
+
+  showColormapDialog: boolean;
+  sliders: SliderDot[];
 }

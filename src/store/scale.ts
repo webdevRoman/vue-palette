@@ -16,7 +16,7 @@ interface ScalableLevel extends Level {
   scaleValue: number;
 }
 
-const formatLevelsToScalable = (levels: Level[]): ScalableLevel[] => {
+export const formatLevelsToScalable = (levels: Level[]): ScalableLevel[] => {
   const levelsMin = levels[0].value
   const levelsMax = levels[levels.length - 1].value
   const scalableLevels: ScalableLevel[] = []

@@ -21,6 +21,9 @@ import 'primevue/resources/themes/saga-blue/theme.css'
 import 'primevue/resources/primevue.min.css'
 import 'primeicons/primeicons.css'
 
+import VueSlider from 'vue-slider-component'
+import 'vue-slider-component/theme/material.css'
+
 const app = createApp(App).use(store).use(PrimeVue, { ripple: true }).use(ToastService);
 
 app.component('FileUpload', FileUpload)
@@ -34,5 +37,7 @@ app.component('Checkbox', Checkbox)
 app.component('Toast', Toast)
 app.component('Dropdown', Dropdown)
 app.component('Panel', Panel)
+
+app.component('VueSlider', VueSlider)
 
 app.mount('#app')

@@ -1,21 +1,22 @@
 @import './vars'
 
 .dialog
-  &-levels
-    &.p-dialog
-      max-width: 90%
-      &-maximized
-        max-width: none
-  &-scale
-    &.p-dialog
-      width 600px
+  &-xl.p-dialog
+    width 90%
+  &-md.p-dialog
+    width 600px
+
+  &-levels.p-dialog-maximized
+    max-width: none
+
   &-line
-    &.p-dialog
-      width 600px
-      .p-dialog-content
-        padding-top 30px
+    &.p-dialog .p-dialog-content
+      padding-top 30px
     .p-dropdown-label
       width 175px
+
+  &-colormap .vue-slider-rail
+    background-color rgba(#000, 0.3)
 
 .cell
   .p-colorpicker-preview
