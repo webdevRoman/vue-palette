@@ -1,7 +1,7 @@
 import {ValidationError} from '@/store/errors'
 import {Palette} from '@/models/Palette'
 import {Level} from '@/models/Level'
-import {SliderDot} from '@/models/SliderDot'
+import {Colormap} from '@/models/Colormap'
 
 export interface State {
   errors: ValidationError[];
@@ -20,5 +20,6 @@ export interface State {
   editableLevelLine: Level;
 
   showColormapDialog: boolean;
-  sliderDots: SliderDot[];
+  colormap: Colormap;
+  colormapPresets: any[];
 }

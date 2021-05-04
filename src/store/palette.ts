@@ -3,6 +3,8 @@ import {Palette} from '@/models/Palette'
 import {LineStyles} from '@/models/LineStyles'
 import {Color} from '@/models/Color'
 import {Level} from '@/models/Level'
+import {ColormapTypes} from '@/models/ColormapTypes'
+import {ColormapPresets} from '@/models/ColormapPresets'
 
 export default {
 
@@ -39,9 +41,13 @@ export default {
       const levelsLines: string[] = [...fileTextLines]
       levelsLines.shift()
       levelsLines.shift()
+      levelsLines.shift()
 
       const palette = {
-        type: fileTextLines[0],
+        linesColormapType: ColormapTypes[fileTextLines[0].split(';')[0].substring(11).trim().toUpperCase()],
+        linesColormapPreset: ColormapPresets[fileTextLines[0].split(';')[1].substring(7).trim().toUpperCase()],
+        fillingColormapType: ColormapTypes[fileTextLines[1].split(';')[0].substring(13).trim().toUpperCase()],
+        fillingColormapPreset: ColormapPresets[fileTextLines[1].split(';')[1].substring(7).trim().toUpperCase()],
         levels: [],
         fileText: fileText
       } as Palette

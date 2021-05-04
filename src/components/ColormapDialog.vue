@@ -3,12 +3,32 @@
           modal maximizable :closeOnEscape="false" @hide="dropFocusedSliderDot">
 
     <Panel header="Выбор из готовых вариантов" class="colormap-panel colormap-presets">
-
+      <span class="p-float-label colormap-preset">
+        <Dropdown id="colormap-preset" class="colormap-preset__dropdown" placeholder="Готовый вариант"
+                  v-model="colormapPreset" :options="storeColormapPresets" @change="changePreset($event)">
+          <template #value="slotProps">
+            <div class="flex colormap-preset__option" v-if="slotProps.value">
+              <div class="flex-50 colormap-preset__gradient" :style="slotProps.value.gradientStyle"></div>
+              <div class="flex-50 colormap-preset__name">{{ slotProps.value.preset }}</div>
+            </div>
+            <span v-else>
+              {{ slotProps.placeholder }}
+            </span>
+          </template>
+          <template #option="slotProps">
+            <div class="flex colormap-preset__option">
+              <div class="flex-50 colormap-preset__gradient" :style="slotProps.option.gradientStyle"></div>
+              <div class="flex-50 colormap-preset__name">{{ slotProps.option.preset }}</div>
+            </div>
+          </template>
+        </Dropdown>
+        <label for="colormap-preset">Готовый вариант</label>
+      </span>
     </Panel>
 
     <Panel header="Редактирование цветовой карты" class="colormap-panel colormap">
       <div class="flex flex-sb slider-controls">
-        <div class="flex-70 flex flex-sb slider-inputs">
+        <div class="flex-50 flex flex-sb slider-inputs">
           <div class="slider-controls__line flex">
             <div class="slider-input dot-value">
               <span class="p-float-label">
@@ -37,10 +57,20 @@
           <Button class="slider-btn" label="Добавить точку" @click="addSliderDot"/>
           <Button class="slider-btn" label="Удалить точку" @click="deleteSliderDot" :disabled="!focusedSliderDot"/>
         </div>
+
+        <Divider layout="vertical"/>
+
+        <div class="flex-25 flex flex-sb slider-btns">
+          <span class="p-float-label slider-btn">
+            <Dropdown id="colormap-type" v-model="colormapType" :options="colormapTypes"/>
+            <label for="colormap-type">Тип цветовой карты</label>
+          </span>
+          <Button class="slider-btn" label="Инвертировать" @click="invertSlider"/>
+        </div>
       </div>
 
       <vue-slider
-          :class="[{ 'slider-deleting': isDeletingDot }]"
+          :class="[{ 'slider-deleting': isDotsTransitionStopped }]"
           ref="slider"
           v-model="sliderDotsValues"
           :data="sliderDots"
@@ -51,8 +81,8 @@
           :process="false"
           :clickable="false"
           :tooltip="'none'"
+          :contained="true"
           @drag-start="onDragStart($event)"
-          @drag-end="onDragEnd($event)"
           @dragging="onDragging($event)">
         <template #dot="{value, index}">
           <div :style="getDotStyle(index)"
@@ -61,6 +91,8 @@
           </div>
         </template>
       </vue-slider>
+
+      <div class="gradient" :style="getGradientStyle()"></div>
     </Panel>
 
     <div class="flex colormap-apply">
@@ -72,9 +104,13 @@
 
 <script lang="ts">
 import {defineComponent} from 'vue'
+import {countPerCent, countValue} from '@/store/scale'
 import {SliderDot} from '@/models/SliderDot'
 import {Color} from '@/models/Color'
-import {countPerCent} from '@/store/scale'
+import {ColormapTypes} from '@/models/ColormapTypes'
+import {Palette} from '@/models/Palette'
+import {Colormap} from '@/models/Colormap'
+import {ColormapPresets} from '@/models/ColormapPresets'
 
 export default defineComponent({
 
@@ -83,6 +119,12 @@ export default defineComponent({
   data() {
     return {
       showColormapDialog: false,
+
+      colormapType: null,
+      colormapTypes: Object.values(ColormapTypes),
+      colormapPreset: null,
+      colormapPresetsNames: Object.values(ColormapPresets),
+
       sliderDots: null as SliderDot[],
       sliderDotsValues: null,
       sliderMinValue: null,
@@ -92,28 +134,75 @@ export default defineComponent({
       value: null,
       position: null,
       color: null,
-      isDeletingDot: false,
+      isDotsTransitionStopped: false,
       deleteListener: null
     }
   },
 
   methods: {
+    stopDotsTransition() {
+      this.isDotsTransitionStopped = true
+      setTimeout(() => this.isDotsTransitionStopped = false, 500)
+    },
+
+    switchToCustomColormapPreset() {
+      if (this.colormapPreset.preset !== ColormapPresets.CUSTOM) {
+        this.$store.dispatch('SET_CUSTOM_PRESET', this.sliderDots)
+        this.colormapPreset = this.storeColormapPresets.find(preset => preset.preset === ColormapPresets.CUSTOM)
+      }
+    },
+
+    getSortedSliderDots() {
+      return [...this.sliderDots].sort((a, b) => a.value - b.value)
+    },
+
+    dropFocusedSliderDot() {
+      this.focusedSliderDot = null
+      this.focusedSliderDotIndex = null
+      this.value = null
+      this.position = null
+      this.color = null
+    },
+
+    changePreset(event: any) {
+      if (event.value.preset !== ColormapPresets.CUSTOM) {
+        this.stopDotsTransition()
+
+        const presetSliderDots = JSON.parse(JSON.stringify(
+            this.storeColormapPresets.find(preset => preset.preset === event.value.preset).sliderDots.slice(0)
+        ))
+        presetSliderDots.forEach((dot: SliderDot) => {
+          dot.value = countValue(dot.perCentValue, this.sliderMinValue, this.sliderMaxValue)
+        })
+
+        this.sliderDots = presetSliderDots
+        this.sliderDotsValues = this.sliderDots.map(dot => dot.value);
+        (this.$refs.slider as any).setValue(this.sliderDotsValues)
+
+        this.dropFocusedSliderDot()
+      }
+    },
+
     setSliderDotValue() {
       if (this.value < this.sliderMinValue) {
         this.value = this.sliderMinValue
       } else if (this.value > this.sliderMaxValue) {
         this.value = this.sliderMaxValue
       }
+
       this.focusedSliderDot.value = this.sliderDotsValues[this.focusedSliderDotIndex] = this.value
       this.focusedSliderDot.perCentValue = this.position = countPerCent(this.value, this.sliderMinValue, this.sliderMaxValue);
       (this.$refs.slider as any).setValue(this.sliderDotsValues)
+
+      this.switchToCustomColormapPreset()
     },
 
     setSliderDotPerCentValue() {
       this.focusedSliderDot.perCentValue = this.position
       this.focusedSliderDot.value = this.sliderDotsValues[this.focusedSliderDotIndex] = this.value =
-          this.sliderMinValue + (this.sliderMaxValue - this.sliderMinValue) * this.position / 100;
+          countValue(this.position, this.sliderMinValue, this.sliderMaxValue);
       (this.$refs.slider as any).setValue(this.sliderDotsValues)
+      this.switchToCustomColormapPreset()
     },
 
     onDragStart(event: any) {
@@ -125,13 +214,10 @@ export default defineComponent({
     },
 
     onDragging(event: any) {
-      this.value = event[this.focusedSliderDotIndex]
-      this.position = countPerCent(this.value, this.sliderMinValue, this.sliderMaxValue)
-    },
-
-    onDragEnd(event: any) {
-      this.sliderDots[event].value = this.sliderDotsValues[event]
-      this.sliderDots[event].perCentValue = countPerCent(this.sliderDotsValues[event], this.sliderMinValue, this.sliderMaxValue)
+      this.value = this.sliderDots[this.focusedSliderDotIndex].value = event[this.focusedSliderDotIndex]
+      this.position = this.sliderDots[this.focusedSliderDotIndex].perCentValue =
+          countPerCent(this.value, this.sliderMinValue, this.sliderMaxValue)
+      this.switchToCustomColormapPreset()
     },
 
     getDotStyle(index: number) {
@@ -144,10 +230,9 @@ export default defineComponent({
     },
 
     addSliderDot() {
-      const sliderDotsCopy = [...this.sliderDots]
-      sliderDotsCopy.sort((a, b) => a.value - b.value)
-      const lastSliderDot = sliderDotsCopy[sliderDotsCopy.length - 1]
-      const preLastSliderDot = sliderDotsCopy[sliderDotsCopy.length - 2]
+      const sortedSliderDots = this.getSortedSliderDots()
+      const lastSliderDot = sortedSliderDots[sortedSliderDots.length - 1]
+      const preLastSliderDot = sortedSliderDots[sortedSliderDots.length - 2]
 
       let newDotValue: number
       let newDotColor: Color
@@ -174,31 +259,57 @@ export default defineComponent({
       } as SliderDot)
       this.sliderDotsValues.push(newDotValue);
       (this.$refs.slider as any).setValue(this.sliderDotsValues)
+
+      this.switchToCustomColormapPreset()
     },
 
     deleteSliderDot() {
       if (this.focusedSliderDot) {
-        this.isDeletingDot = true
-        setTimeout(() => this.isDeletingDot = false, 500)
+        this.stopDotsTransition()
 
         this.sliderDots.splice(this.focusedSliderDotIndex, 1)
         this.sliderDotsValues.splice(this.focusedSliderDotIndex, 1);
         (this.$refs.slider as any).setValue(this.sliderDotsValues)
         this.dropFocusedSliderDot()
+
+        this.switchToCustomColormapPreset()
       }
+    },
+
+    getGradientStyle() {
+      const sortedSliderDots = this.getSortedSliderDots()
+      let dotsGradientString = ''
+      if (this.colormapType === ColormapTypes.INTERVAL) {
+        for (let i = 0; i < sortedSliderDots.length - 1; i++) {
+          dotsGradientString += '#' + sortedSliderDots[i].color.hex + ' ' + sortedSliderDots[i].perCentValue +
+              '%, #' + sortedSliderDots[i].color.hex + ' ' + sortedSliderDots[i + 1].perCentValue + '%, '
+        }
+        dotsGradientString += '#' + sortedSliderDots[sortedSliderDots.length - 1].color.hex + ' ' +
+            sortedSliderDots[sortedSliderDots.length - 1].perCentValue + '%, #' +
+            sortedSliderDots[sortedSliderDots.length - 1].color.hex + ' 100%, '
+      } else {
+        sortedSliderDots.forEach(dot => dotsGradientString += `#${dot.color.hex} ${dot.perCentValue}%, `)
+      }
+      return `background: linear-gradient(to right, ${dotsGradientString.substring(0, dotsGradientString.length - 2)})`
+    },
+
+    invertSlider() {
+      this.stopDotsTransition()
+
+      for (let i = 0; i < this.sliderDots.length; i++) {
+        this.sliderDots[i].perCentValue = 100 - this.sliderDots[i].perCentValue
+        this.sliderDots[i].value = this.sliderDotsValues[i] =
+            countValue(this.sliderDots[i].perCentValue, this.sliderMinValue, this.sliderMaxValue);
+        (this.$refs.slider as any).setValue(this.sliderDotsValues)
+      }
+      this.dropFocusedSliderDot()
+
+      this.switchToCustomColormapPreset()
     },
 
     applyColormap() {
       // console.log('apply');
       // (this.$refs.slider as any).focus(1)
-    },
-
-    dropFocusedSliderDot() {
-      this.focusedSliderDot = null
-      this.focusedSliderDotIndex = null
-      this.value = null
-      this.position = null
-      this.color = null
     }
   },
 
@@ -207,8 +318,16 @@ export default defineComponent({
       return this.$store.getters.showColormapDialog
     },
 
-    storeSliderDots(): SliderDot[] {
-      return this.$store.getters.sliderDots
+    storeColormap(): Colormap {
+      return this.$store.getters.colormap
+    },
+
+    palette(): Palette {
+      return this.$store.getters.palette
+    },
+
+    storeColormapPresets(): Colormap[] {
+      return this.$store.getters.colormapPresets
     }
   },
 
@@ -234,9 +353,11 @@ export default defineComponent({
       }
     },
 
-    storeSliderDots(value: SliderDot[]) {
+    storeColormap(value: Colormap) {
       if (value) {
-        this.sliderDots = [...value]
+        this.colormapType = value.type
+        this.colormapPreset = this.storeColormapPresets.find(preset => preset.preset === value.preset)
+        this.sliderDots = JSON.parse(JSON.stringify(value.sliderDots))
         this.sliderDotsValues = this.sliderDots?.map(slider => slider.value)
         this.sliderMinValue = this.sliderDots[0].value
         this.sliderMaxValue = this.sliderDots[this.sliderDots?.length - 1].value
@@ -253,9 +374,23 @@ export default defineComponent({
 </script>
 
 <style scoped lang="stylus">
+@import '../assets/styles/vars'
+
 .colormap
   &-panel
     margin-bottom 30px
+  &-preset
+    margin-top 20px
+    &__dropdown
+      width 100%
+    &__option
+      align-items center
+    &__gradient
+      height 30px
+      border 1px solid $border-base
+      border-radius 3px
+      margin-right 20px
+      transition 0.3s
   &-apply
     justify-content flex-end
 
@@ -268,6 +403,8 @@ export default defineComponent({
         margin-right 20px
       &-color
         margin-top 10px
+    .p-divider:before
+      border-left-style solid
 
   &-inputs
     flex-direction column
@@ -279,8 +416,11 @@ export default defineComponent({
   &-btns
     flex-direction column
     align-items stretch
-  &-btn:first-child
-    margin 20px 0 10px 0
+  &-btn
+    .p-dropdown
+      width: 100%
+    &:first-child
+      margin 20px 0 10px 0
 
   &-dot
     position relative
@@ -302,4 +442,12 @@ export default defineComponent({
       transition transform 0.2s
     &_focus .slider-dot__shadow
       transform translate(-50%, -50%) scale(1)
+
+.gradient
+  width 100%
+  height 50px
+  border 1px solid $border-base
+  border-radius 3px
+  margin-top 20px
+  transition 0.3s
 </style>
