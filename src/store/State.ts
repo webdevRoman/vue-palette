@@ -2,6 +2,7 @@ import {ValidationError} from '@/store/errors'
 import {Palette} from '@/models/Palette'
 import {Level} from '@/models/Level'
 import {Colormap} from '@/models/Colormap'
+import {ColormapInitiators} from '@/models/ColormapInitiators'
 
 export interface State {
   errors: ValidationError[];
@@ -20,6 +21,7 @@ export interface State {
   editableLevelLine: Level;
 
   showColormapDialog: boolean;
+  colormapInitiator: ColormapInitiators;
   colormap: Colormap;
   colormapPresets: any[];
 }

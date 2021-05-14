@@ -25,7 +25,7 @@ export const formatLevelsToScalable = (levels: Level[]): ScalableLevel[] => {
   levels.forEach(level => {
     scalableLevels.push({
       ...level,
-      scaleValue: countPerCent(level.value, levels[0].value, levels[levels.length - 1].value) / 100
+      scaleValue: countPerCent(level.value, levels[0].value, levels[levels.length - 1].value)
     } as ScalableLevel)
   })
   return scalableLevels
@@ -103,7 +103,7 @@ const scaleLevels = (newLevels: Level[], oldLevels: Level[], scaleLines: boolean
   return scaledLevels
 }
 
-const binarySearch = (data: Level[], target: number, start: number, end: number): Level => {
+export const binarySearch = <T extends { value: number }>(data: T[], target: number, start: number, end: number): T => {
   if (end < 1) {
     return data[0]
   }

@@ -33,7 +33,7 @@
         <Column field="fillColor">
           <template #header>
             <Button label="Цвет закраски" class="cell cell-header p-button-text p-button-plain"
-                    @click="showColormapDialog(COLORMAP_FILLING)"/>
+                    @click="showColormapDialog(colormapInitiator)"/>
           </template>
           <template #body="{data}">
             <ColorPicker v-model="data.fillColor.hex" class="cell cell-fill"/>
@@ -67,7 +67,7 @@ import LevelValue from '@/components/LevelValue.vue'
 import ScaleDialog from '@/components/ScaleDialog.vue'
 import LineDialog from '@/components/LineDialog.vue'
 import ColormapDialog from '@/components/ColormapDialog.vue'
-import {COLORMAP_FILLING} from '@/models/Constants'
+import {ColormapInitiators} from '@/models/ColormapInitiators'
 
 export default defineComponent({
 
@@ -87,7 +87,7 @@ export default defineComponent({
       LineStyles: LineStyles,
       deleteMode: false,
       selectedLevels: null,
-      COLORMAP_FILLING: COLORMAP_FILLING
+      colormapInitiator: ColormapInitiators.FILLING
     }
   },
 

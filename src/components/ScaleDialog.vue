@@ -35,12 +35,11 @@
         <div class="scale-checkboxes">
           <div class="scale-checkbox">
             <Checkbox class="scale-checkbox__box" id="scale-lines" v-model="isScaleLines" :binary="true"/>
-            <label class="scale-checkbox__label" for="scale-lines">Масштабировать линии уровня</label>
+            <label class="scale-checkbox__label" for="scale-lines">Масштабировать линии</label>
           </div>
           <div class="scale-checkbox">
             <Checkbox class="scale-checkbox__box" id="scale-filling" v-model="isScaleFilling" :binary="true"/>
-            <label class="scale-checkbox__label" for="scale-filling">Масштабировать цвета закраски между линиями
-              уровня</label>
+            <label class="scale-checkbox__label" for="scale-filling">Масштабировать цвета закраски между линиями</label>
           </div>
         </div>
 
@@ -144,14 +143,13 @@ export default defineComponent({
     showScaleDialog(value) {
       if (!value) {
         this.$store.dispatch('HIDE_SCALE_DIALOG')
+      } else {
+        this.$store.dispatch('SET_SCALE_LIMITS')
+        this.min = this.$store.getters.scaleMin
+        this.max = this.$store.getters.scaleMax
+        this.interval = this.$store.getters.scaleInterval
       }
     }
-  },
-
-  created() {
-    this.min = this.$store.getters.scaleMin
-    this.max = this.$store.getters.scaleMax
-    this.interval = this.$store.getters.scaleInterval
   }
 })
 </script>

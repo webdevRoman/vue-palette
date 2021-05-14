@@ -48,7 +48,7 @@
             </div>
           </div>
           <div class="dot-color">
-            <label class="label">Цвет линии</label>
+            <label class="label">Цвет</label>
             <ColorPicker v-model="color" format="rgb" :disabled="!focusedSliderDot" class="cell"/>
           </div>
         </div>
@@ -169,7 +169,7 @@ export default defineComponent({
         this.stopDotsTransition()
 
         const presetSliderDots = JSON.parse(JSON.stringify(
-            this.storeColormapPresets.find(preset => preset.preset === event.value.preset).sliderDots.slice(0)
+            this.storeColormapPresets.find(preset => preset.preset === event.value.preset).sliderDots
         ))
         presetSliderDots.forEach((dot: SliderDot) => {
           dot.value = countValue(dot.perCentValue, this.sliderMinValue, this.sliderMaxValue)
@@ -259,6 +259,7 @@ export default defineComponent({
       } as SliderDot)
       this.sliderDotsValues.push(newDotValue);
       (this.$refs.slider as any).setValue(this.sliderDotsValues)
+      this.onDragStart(this.sliderDotsValues.length - 1)
 
       this.switchToCustomColormapPreset()
     },
@@ -295,6 +296,8 @@ export default defineComponent({
 
     invertSlider() {
       this.stopDotsTransition()
+      this.switchToCustomColormapPreset()
+      this.dropFocusedSliderDot()
 
       for (let i = 0; i < this.sliderDots.length; i++) {
         this.sliderDots[i].perCentValue = 100 - this.sliderDots[i].perCentValue
@@ -302,14 +305,17 @@ export default defineComponent({
             countValue(this.sliderDots[i].perCentValue, this.sliderMinValue, this.sliderMaxValue);
         (this.$refs.slider as any).setValue(this.sliderDotsValues)
       }
-      this.dropFocusedSliderDot()
-
-      this.switchToCustomColormapPreset()
     },
 
     applyColormap() {
-      // console.log('apply');
-      // (this.$refs.slider as any).focus(1)
+      this.$store.dispatch('APPLY_COLORMAP', {
+        type: this.colormapType,
+        preset: this.colormapPreset.preset,
+        sliderDots: this.getSortedSliderDots()
+      } as Colormap)
+
+      this.dropFocusedSliderDot()
+      this.$store.dispatch('HIDE_COLORMAP_DIALOG')
     }
   },
 

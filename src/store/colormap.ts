@@ -1,17 +1,18 @@
 import {State} from '@/store/State'
 import {countValue, formatLevelsToScalable} from '@/store/scale'
-import {COLORMAP_FILLING} from '@/models/Constants'
 import {Colormap} from '@/models/Colormap'
 import {SliderDot} from '@/models/SliderDot'
 import {Palette} from '@/models/Palette'
 import {ColormapTypes} from '@/models/ColormapTypes'
 import {ColormapPresets} from '@/models/ColormapPresets'
 import {Color} from '@/models/Color'
+import {ColormapInitiators} from '@/models/ColormapInitiators'
 
 export default {
 
   state: () => ({
     showColormapDialog: false,
+    colormapInitiator: null,
     colormap: null,
     colormapPresets: [{
       type: ColormapTypes.GRADIENT,
@@ -43,9 +44,16 @@ export default {
   }),
 
   mutations: {
-    SHOW_COLORMAP_DIALOG(state: State, colormap: Colormap) {
-      state.colormap = colormap
+    SHOW_COLORMAP_DIALOG(state: State) {
       state.showColormapDialog = true
+    },
+
+    SET_COLORMAP_INITIATOR(state: State, initiator: ColormapInitiators) {
+      state.colormapInitiator = initiator
+    },
+
+    SET_COLORMAP(state: State, colormap: Colormap) {
+      state.colormap = colormap
     },
 
     SET_CUSTOM_PRESET(state: State, sliderDots: SliderDot[]) {
@@ -55,12 +63,15 @@ export default {
 
     HIDE_COLORMAP_DIALOG(state: State) {
       state.showColormapDialog = false
+      state.colormapInitiator = null
       state.colormap = null
+      const customPreset = state.colormapPresets.find(preset => preset.preset === ColormapPresets.CUSTOM)
+      customPreset.sliderDots = []
     }
   },
 
   actions: {
-    SHOW_COLORMAP_DIALOG({commit, getters}, initiator: string) {
+    SHOW_COLORMAP_DIALOG({commit, getters}, initiator: ColormapInitiators) {
       const colormap = {
         type: null,
         preset: null,
@@ -68,23 +79,23 @@ export default {
       } as Colormap
       const palette = getters.palette as Palette
       const levels = formatLevelsToScalable(palette.levels)
-      if (initiator === COLORMAP_FILLING) {
+      if (initiator === ColormapInitiators.FILLING) {
         colormap.type = palette.fillingColormapType
         colormap.preset = palette.fillingColormapPreset
         if (colormap.preset === ColormapPresets.CUSTOM) {
           levels.forEach(level => colormap.sliderDots.push({
             value: level.value,
-            perCentValue: level.scaleValue * 100,
+            perCentValue: level.scaleValue,
             color: level.fillColor
           } as SliderDot))
         }
-      } else {
+      } else if (initiator === ColormapInitiators.LINES) {
         colormap.type = palette.linesColormapType
         colormap.preset = palette.linesColormapPreset
         if (colormap.preset === ColormapPresets.CUSTOM) {
           levels.forEach(level => colormap.sliderDots.push({
             value: level.value,
-            perCentValue: level.scaleValue * 100,
+            perCentValue: level.scaleValue,
             color: level.lineColor
           } as SliderDot))
         }
@@ -99,7 +110,9 @@ export default {
       }
       commit('SET_CUSTOM_PRESET', colormap.sliderDots)
 
-      commit('SHOW_COLORMAP_DIALOG', colormap)
+      commit('SET_COLORMAP_INITIATOR', initiator)
+      commit('SET_COLORMAP', colormap)
+      commit('SHOW_COLORMAP_DIALOG')
     },
 
     SET_CUSTOM_PRESET({commit}, sliderDots: SliderDot[]) {
@@ -113,6 +126,7 @@ export default {
 
   getters: {
     showColormapDialog: (state: State) => state.showColormapDialog,
+    colormapInitiator: (state: State) => state.colormapInitiator,
     colormap: (state: State) => state.colormap,
     colormapPresets: (state: State) => state.colormapPresets
   }

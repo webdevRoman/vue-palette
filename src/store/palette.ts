@@ -5,6 +5,10 @@ import {Color} from '@/models/Color'
 import {Level} from '@/models/Level'
 import {ColormapTypes} from '@/models/ColormapTypes'
 import {ColormapPresets} from '@/models/ColormapPresets'
+import {Colormap} from '@/models/Colormap'
+import {ColormapInitiators} from '@/models/ColormapInitiators'
+import {binarySearch, countPerCent, formatLevelsToScalable} from '@/store/scale'
+import {SliderDot} from '@/models/SliderDot'
 
 export default {
 
@@ -35,7 +39,7 @@ export default {
   },
 
   actions: {
-    async READ_PALETTE_FROM_FILE({commit, dispatch}, file: File) {
+    async READ_PALETTE_FROM_FILE({commit}, file: File) {
       const fileText: string = await file.text()
       const fileTextLines: string[] = fileText.split('\n')
       const levelsLines: string[] = [...fileTextLines]
@@ -67,7 +71,6 @@ export default {
 
       commit('SET_PALETTE', palette)
       commit('SORT_LEVELS')
-      dispatch('SET_SCALE_LIMITS')
     },
 
     SET_LEVEL_VALUE({commit}, level: Level) {
@@ -76,6 +79,77 @@ export default {
 
     SORT_LEVELS({commit}) {
       commit('SORT_LEVELS')
+    },
+
+    APPLY_COLORMAP({commit, getters}, colormap: Colormap) {
+      const initiator: ColormapInitiators = getters.colormapInitiator
+      const palette: Palette = getters.palette
+
+      if (initiator === ColormapInitiators.FILLING) {
+        palette.fillingColormapType = colormap.type
+        palette.fillingColormapPreset = colormap.preset
+      } else if (initiator === ColormapInitiators.LINES) {
+        palette.linesColormapType = colormap.type
+        palette.linesColormapPreset = colormap.preset
+      }
+
+      palette.levels.forEach(level => {
+        const nearestSliderDot =
+          binarySearch(colormap.sliderDots, level.value, 0, colormap.sliderDots.length - 1)
+        const nearestSliderDotIndex = colormap.sliderDots.indexOf(nearestSliderDot)
+
+        let leftSliderDot: SliderDot
+        let rightSliderDot: SliderDot
+        if (nearestSliderDot.value <= level.value) {
+          leftSliderDot = nearestSliderDot
+          rightSliderDot = nearestSliderDotIndex < (colormap.sliderDots.length - 1) ?
+            colormap.sliderDots[nearestSliderDotIndex + 1] :
+            colormap.sliderDots[colormap.sliderDots.length - 1]
+        } else {
+          leftSliderDot = nearestSliderDotIndex > 0 ?
+            colormap.sliderDots[nearestSliderDotIndex - 1] :
+            colormap.sliderDots[0]
+          rightSliderDot = nearestSliderDot
+        }
+
+        if (colormap.type === ColormapTypes.GRADIENT) {
+          if (level.value === nearestSliderDot.value) {
+            level.fillColor = nearestSliderDot.color
+          } else {
+            const dotPerCent = countPerCent(level.value, leftSliderDot.value, rightSliderDot.value)
+            let r, g, b
+            // let minR, maxR, minG, maxG, minB, maxB
+            if (leftSliderDot.color.rgbObj.r <= rightSliderDot.color.rgbObj.r) {
+              r = leftSliderDot.color.rgbObj.r +
+                (rightSliderDot.color.rgbObj.r - leftSliderDot.color.rgbObj.r) * dotPerCent / 100
+            } else {
+              r = rightSliderDot.color.rgbObj.r +
+                (leftSliderDot.color.rgbObj.r - rightSliderDot.color.rgbObj.r) * (1 - dotPerCent / 100)
+            }
+            if (leftSliderDot.color.rgbObj.g <= rightSliderDot.color.rgbObj.g) {
+              g = leftSliderDot.color.rgbObj.g +
+                (rightSliderDot.color.rgbObj.g - leftSliderDot.color.rgbObj.g) * dotPerCent / 100
+            } else {
+              g = rightSliderDot.color.rgbObj.g +
+                (leftSliderDot.color.rgbObj.g - rightSliderDot.color.rgbObj.g) * (1 - dotPerCent / 100)
+            }
+            if (leftSliderDot.color.rgbObj.b <= rightSliderDot.color.rgbObj.b) {
+              b = leftSliderDot.color.rgbObj.b +
+                (rightSliderDot.color.rgbObj.b - leftSliderDot.color.rgbObj.b) * dotPerCent / 100
+            } else {
+              b = rightSliderDot.color.rgbObj.b +
+                (leftSliderDot.color.rgbObj.b - rightSliderDot.color.rgbObj.b) * (1 - dotPerCent / 100)
+            }
+            level.fillColor = new Color(
+              'RGB(' + r + ',' + g + ',' + b + ')'
+            )
+          }
+        } else if (colormap.type === ColormapTypes.INTERVAL) {
+          level.fillColor = leftSliderDot.color
+        }
+      })
+
+      commit('SET_PALETTE', palette)
     }
   },
 
