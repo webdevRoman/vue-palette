@@ -93,6 +93,14 @@ export default {
         palette.linesColormapPreset = colormap.preset
       }
 
+      if (colormap.sliderDots[colormap.sliderDots.length - 1].perCentValue < 100) {
+        colormap.sliderDots.push({
+          value: palette.levels[palette.levels.length - 1].value,
+          perCentValue: 100,
+          color: colormap.sliderDots[colormap.sliderDots.length - 1].color
+        })
+      }
+
       palette.levels.forEach(level => {
         const nearestSliderDot =
           binarySearch(colormap.sliderDots, level.value, 0, colormap.sliderDots.length - 1)
