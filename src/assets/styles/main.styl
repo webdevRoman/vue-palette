@@ -22,27 +22,6 @@ html
 body
   overflow-x: hidden
 
-//.container
-//  width: 100%
-//  display: flex
-//  flex: 0 0 auto
-//  flex-wrap: wrap
-//  position: relative
-//  margin: 0 auto
-//  max-width: $wcXL
-//  @media screen and (max-width: $wXL)
-//    max-width: $wcL
-//  @media screen and (max-width: $wL)
-//    max-width: $wcM
-//  @media screen and (max-width: $wM)
-//    max-width: $wcS
-//  @media screen and (max-width: $wS)
-//    max-width: $wcXS
-//
-//.title
-//  font-size: 36px
-//  font-weight: bold
-
 .text
   font-size: 16px
   line-height: 1.5
@@ -81,3 +60,17 @@ body
     flex-basis 90%
   &-100
     flex-basis 100%
+
+.fullwidth
+  width 100%
+
+.checkbox
+  display flex
+  align-items center
+  .checkbox
+    &__box
+      margin-right 10px
+    &__label
+      display inline-block
+      max-width 280px
+      cursor pointer

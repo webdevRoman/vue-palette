@@ -19,6 +19,7 @@ export interface State {
 
   showLineDialog: boolean;
   editableLevelLine: Level;
+  showLinesDialog: boolean;
 
   showColormapDialog: boolean;
   colormapInitiator: ColormapInitiators;

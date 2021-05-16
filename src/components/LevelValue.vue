@@ -4,17 +4,17 @@
     <div v-if="editMode" class="level-value">
       <InputNumber v-model="level.value"
                    :class="`level-value__input ${wrongValue ? 'input_wrong' : ''}`"
-                   @keyup.enter="changeLevelValue"
-                   @keyup.esc="resetLevelValue"/>
+                   @keyup.enter="changeLevelValue()"
+                   @keyup.esc="resetLevelValue()"/>
       <Button icon="pi pi-times" class="p-button-danger level-value__btn"
-              @click="resetLevelValue"/>
+              @click="resetLevelValue()"/>
       <Button icon="pi pi-check" class="p-button-success level-value__btn"
-              @click="changeLevelValue"/>
+              @click="changeLevelValue()"/>
     </div>
 
     <Button v-else
             :label="level.value.toString()" class="cell p-button-text p-button-plain"
-            @click="setEditableLevel"/>
+            @click="setEditableLevel()"/>
 
   </div>
 </template>

@@ -33,17 +33,17 @@
 
       <div class="scale-right flex flex-sb">
         <div class="scale-checkboxes">
-          <div class="scale-checkbox">
-            <Checkbox class="scale-checkbox__box" id="scale-lines" v-model="isScaleLines" :binary="true"/>
-            <label class="scale-checkbox__label" for="scale-lines">Масштабировать линии</label>
+          <div class="checkbox scale-checkbox">
+            <Checkbox class="checkbox__box" id="scale-lines" v-model="isScaleLines" :binary="true"/>
+            <label class="checkbox__label" for="scale-lines">Масштабировать линии</label>
           </div>
-          <div class="scale-checkbox">
-            <Checkbox class="scale-checkbox__box" id="scale-filling" v-model="isScaleFilling" :binary="true"/>
-            <label class="scale-checkbox__label" for="scale-filling">Масштабировать цвета закраски между линиями</label>
+          <div class="checkbox scale-checkbox">
+            <Checkbox class="checkbox__box" id="scale-filling" v-model="isScaleFilling" :binary="true"/>
+            <label class="checkbox__label" for="scale-filling">Масштабировать цвета закраски между линиями</label>
           </div>
         </div>
 
-        <Button label="Применить" @click="checkScaleForm" :disabled="wrongMin || wrongMax || wrongInterval"/>
+        <Button label="Применить" @click="checkScaleForm()" :disabled="wrongMin || wrongMax || wrongInterval"/>
       </div>
 
     </div>
@@ -156,7 +156,7 @@ export default defineComponent({
 
 <style scoped lang="stylus">
 .data-limits
-  margin-bottom 50px
+  margin-bottom 20px
 
 .scale
   &-input
@@ -171,14 +171,4 @@ export default defineComponent({
 
   &-checkbox
     margin-bottom 20px
-
-    &__box
-      vertical-align middle
-      margin-right 10px
-
-    &__label
-      display inline-block
-      max-width 280px
-      vertical-align middle
-      cursor pointer
 </style>

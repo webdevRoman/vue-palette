@@ -6,7 +6,7 @@ import levelsDialog from '@/store/levelsDialog'
 import palette from '@/store/palette'
 import scale from '@/store/scale'
 import errors from '@/store/errors'
-import line from '@/store/line'
+import lines from '@/store/lines'
 import colormap from '@/store/colormap'
 
 export default createStore<State>({
@@ -15,7 +15,7 @@ export default createStore<State>({
     levelsDialog,
     palette,
     scale,
-    line,
+    lines,
     colormap
   }
 })

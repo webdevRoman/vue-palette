@@ -17,6 +17,7 @@ import Toast from 'primevue/toast'
 import Dropdown from 'primevue/dropdown'
 import Panel from 'primevue/panel'
 import Divider from 'primevue/divider'
+import RadioButton from 'primevue/radiobutton'
 
 import 'primevue/resources/themes/saga-blue/theme.css'
 import 'primevue/resources/primevue.min.css'
@@ -39,6 +40,7 @@ app.component('Toast', Toast)
 app.component('Dropdown', Dropdown)
 app.component('Panel', Panel)
 app.component('Divider', Divider)
+app.component('RadioButton', RadioButton)
 
 app.component('VueSlider', VueSlider)
 

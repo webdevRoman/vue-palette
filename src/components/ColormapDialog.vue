@@ -1,6 +1,6 @@
 <template>
   <Dialog class="dialog-colormap dialog-xl" header="Редактирование цветовой карты" v-model:visible="showColormapDialog"
-          modal maximizable :closeOnEscape="false" @hide="dropFocusedSliderDot">
+          modal maximizable :closeOnEscape="false" @hide="dropFocusedSliderDot()">
 
     <Panel header="Выбор из готовых вариантов" class="colormap-panel colormap-presets">
       <span class="p-float-label colormap-preset">
@@ -33,7 +33,7 @@
             <div class="slider-input dot-value">
               <span class="p-float-label">
                 <InputNumber id="value" v-model="value" :disabled="!focusedSliderDot"
-                             @focusout="setSliderDotValue" @keypress.enter="setSliderDotValue"
+                             @focusout="setSliderDotValue()" @keypress.enter="setSliderDotValue()"
                              :minFractionDigits="2" :maxFractionDigits="2"/>
                 <label for="value">Значение</label>
               </span>
@@ -41,7 +41,7 @@
             <div class="slider-input">
               <span class="p-float-label">
                 <InputNumber id="position" v-model="position" :disabled="!focusedSliderDot"
-                             @focusout="setSliderDotPerCentValue" @keypress.enter="setSliderDotPerCentValue"
+                             @focusout="setSliderDotPerCentValue()" @keypress.enter="setSliderDotPerCentValue()"
                              :minFractionDigits="2" :maxFractionDigits="2" suffix="%" :min="0" :max="100"/>
                 <label for="position">Позиция</label>
               </span>
@@ -54,8 +54,8 @@
         </div>
 
         <div class="flex-25 flex flex-sb slider-btns">
-          <Button class="slider-btn" label="Добавить точку" @click="addSliderDot"/>
-          <Button class="slider-btn" label="Удалить точку" @click="deleteSliderDot" :disabled="!focusedSliderDot"/>
+          <Button class="slider-btn" label="Добавить точку" @click="addSliderDot()"/>
+          <Button class="slider-btn" label="Удалить точку" @click="deleteSliderDot()" :disabled="!focusedSliderDot"/>
         </div>
 
         <Divider layout="vertical"/>
@@ -65,7 +65,7 @@
             <Dropdown id="colormap-type" v-model="colormapType" :options="colormapTypes"/>
             <label for="colormap-type">Тип цветовой карты</label>
           </span>
-          <Button class="slider-btn" label="Инвертировать" @click="invertSlider"/>
+          <Button class="slider-btn" label="Инвертировать" @click="invertSlider()"/>
         </div>
       </div>
 
@@ -96,7 +96,7 @@
     </Panel>
 
     <div class="flex colormap-apply">
-      <Button label="Применить" @click="applyColormap"/>
+      <Button label="Применить" @click="applyColormap()"/>
     </div>
 
   </Dialog>
@@ -105,6 +105,7 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {countPerCent, countValue} from '@/store/scale'
+import {getGradientStyle} from '@/store/colormap'
 import {SliderDot} from '@/models/SliderDot'
 import {Color} from '@/models/Color'
 import {ColormapTypes} from '@/models/ColormapTypes'
@@ -278,20 +279,7 @@ export default defineComponent({
     },
 
     getGradientStyle() {
-      const sortedSliderDots = this.getSortedSliderDots()
-      let dotsGradientString = ''
-      if (this.colormapType === ColormapTypes.INTERVAL) {
-        for (let i = 0; i < sortedSliderDots.length - 1; i++) {
-          dotsGradientString += '#' + sortedSliderDots[i].color.hex + ' ' + sortedSliderDots[i].perCentValue +
-              '%, #' + sortedSliderDots[i].color.hex + ' ' + sortedSliderDots[i + 1].perCentValue + '%, '
-        }
-        dotsGradientString += '#' + sortedSliderDots[sortedSliderDots.length - 1].color.hex + ' ' +
-            sortedSliderDots[sortedSliderDots.length - 1].perCentValue + '%, #' +
-            sortedSliderDots[sortedSliderDots.length - 1].color.hex + ' 100%, '
-      } else {
-        sortedSliderDots.forEach(dot => dotsGradientString += `#${dot.color.hex} ${dot.perCentValue}%, `)
-      }
-      return `background: linear-gradient(to right, ${dotsGradientString.substring(0, dotsGradientString.length - 2)})`
+      return getGradientStyle(this.getSortedSliderDots(), this.colormapType)
     },
 
     invertSlider() {
@@ -334,6 +322,10 @@ export default defineComponent({
 
     storeColormapPresets(): Colormap[] {
       return this.$store.getters.colormapPresets
+    },
+
+    isLinesDialog(): boolean {
+      return this.$store.getters.isLinesDialog
     }
   },
 
@@ -416,8 +408,6 @@ export default defineComponent({
     flex-direction column
     align-items stretch
     margin-right 20px
-  &-input
-    margin-top 20px
 
   &-btns
     flex-direction column
@@ -426,7 +416,7 @@ export default defineComponent({
     .p-dropdown
       width: 100%
     &:first-child
-      margin 20px 0 10px 0
+      margin 25px 0 10px 0
 
   &-dot
     position relative

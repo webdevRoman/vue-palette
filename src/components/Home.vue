@@ -7,7 +7,7 @@
       <div class="home-option">
         <FileUpload class="home-option__upload"
                     chooseLabel="Выбрать файл" uploadLabel="Редактировать палитру" :showCancelButton="false"
-                    :customUpload="true" @uploader="onSelectFile">
+                    :customUpload="true" @uploader="onSelectFile($event)">
           <template #empty>
             <p>Перетащите файл сюда</p>
           </template>

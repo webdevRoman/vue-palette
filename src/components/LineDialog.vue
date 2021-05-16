@@ -5,7 +5,8 @@
       <div class="line-left">
         <div class="line-property line-style">
           <span class="p-float-label">
-            <Dropdown id="line-style" v-model="style" :options="lineStyles" placeholder="Стиль линии">
+            <Dropdown id="line-style" v-model="style" :options="lineStyles"
+                      class="fullwidth" placeholder="Стиль линии">
               <template #value="slotProps">
                 <div class="line-style__option" v-if="slotProps.value"
                      :style="`border-top: 2px ${slotProps.value.toLowerCase()} #000000`">
@@ -26,13 +27,13 @@
 
         <div class="line-property line-color">
           <label class="label">Цвет линии</label>
-          <ColorPicker v-model="color" format="rgb" class="cell cell-fill"/>
+          <ColorPicker v-model="color" format="rgb" class="fullwidth cell cell-fill"/>
         </div>
 
         <div class="line-property line-width">
           <span class="p-float-label">
             <InputNumber id="line-width" v-model="width" :min="0" :max="50"
-                         :class="`${wrongWidth ? 'input_wrong' : ''}`" @input="wrongWidth = false"/>
+                         :class="`fullwidth ${wrongWidth ? 'input_wrong' : ''}`" @input="wrongWidth = false"/>
             <label for="line-width">Ширина линии</label>
           </span>
         </div>
@@ -45,7 +46,7 @@
           </div>
         </Panel>
 
-        <Button label="Применить" @click="checkLineForm" :disabled="wrongWidth"/>
+        <Button label="Применить" @click="checkLineForm()" :disabled="wrongWidth"/>
       </div>
     </div>
 
@@ -57,7 +58,6 @@ import {defineComponent} from 'vue'
 import {Level} from '@/models/Level'
 import {LineStyles} from '@/models/LineStyles'
 import {Field, Validator} from '@/store/errors'
-import {ScaleInfo} from '@/store/scale'
 
 export default defineComponent({
 
@@ -140,16 +140,14 @@ export default defineComponent({
     flex-basis 50%
     flex-direction column
     align-items flex-end
-
+    margin-left 30px
   &-property
     margin-bottom 45px
-
     &:last-child
       margin-bottom 0
 
   &-style
     margin-bottom 20px
-
     &__option
       height 10px
       margin-top 10px
