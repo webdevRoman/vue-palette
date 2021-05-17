@@ -26,7 +26,7 @@ import 'primeicons/primeicons.css'
 import VueSlider from 'vue-slider-component'
 import 'vue-slider-component/theme/material.css'
 
-const app = createApp(App).use(store).use(PrimeVue, { ripple: true }).use(ToastService);
+const app = createApp(App).use(store).use(PrimeVue, { ripple: true }).use(ToastService)
 
 app.component('FileUpload', FileUpload)
 app.component('Button', Button)
