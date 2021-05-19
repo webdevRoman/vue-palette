@@ -42,8 +42,8 @@
       </DataTable>
 
       <div class="controls flex-25" v-if="deleteMode">
-        <Button label="Подтвердить"/>
-        <Button label="Отменить" @click="deleteMode = false"/>
+        <Button label="Подтвердить" @click="deleteLevels()"/>
+        <Button label="Отменить" @click="exitDeleteMode()"/>
       </div>
       <div class="controls flex-25" v-else>
         <Button label="Добавить уровень" @click="addLevel()"/>
@@ -95,6 +95,16 @@ export default defineComponent({
   methods: {
     addLevel() {
       this.$store.dispatch('ADD_LEVEL')
+    },
+
+    exitDeleteMode() {
+      this.selectedLevels = null
+      this.deleteMode = false
+    },
+
+    deleteLevels() {
+      this.$store.dispatch('DELETE_LEVELS', this.selectedLevels)
+      this.exitDeleteMode()
     },
 
     showScaleDialog() {

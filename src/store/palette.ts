@@ -47,13 +47,21 @@ export default {
 
     ADD_LEVEL(state: State) {
       state.palette.levels.push({
-        id: state.palette.levels.length,
-        value: state.palette.levels[0].value - 1,
+        id: state.palette.levels.length > 0 ? state.palette.levels.length : 0,
+        value: state.palette.levels.length > 0 ? state.palette.levels[0].value - 1 : 0,
         lineStyle: LineStyles.SOLID,
         lineWidth: 1,
         lineColor: new Color('RGB(0,0,0)'),
         fillColor: new Color('RGB(255,255,255)')
       } as Level)
+    },
+
+    DELETE_LEVELS(state: State, levels: Level[]) {
+      if (levels.length === state.palette.levels.length) {
+        state.palette.levels = []
+      } else {
+        levels.forEach(level => state.palette.levels.splice(state.palette.levels.indexOf(level), 1))
+      }
     }
   },
 
@@ -103,6 +111,10 @@ export default {
     ADD_LEVEL({commit}) {
       commit('ADD_LEVEL')
       commit('SORT_LEVELS')
+    },
+
+    DELETE_LEVELS({commit}, levels: Level[]) {
+      commit('DELETE_LEVELS', levels)
     }
   },
 
