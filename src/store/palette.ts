@@ -43,6 +43,17 @@ export default {
 
     SET_LINES_COLOR(state: State, color: Color) {
       state.palette.levels.forEach(level => level.lineColor = color)
+    },
+
+    ADD_LEVEL(state: State) {
+      state.palette.levels.push({
+        id: state.palette.levels.length,
+        value: state.palette.levels[0].value - 1,
+        lineStyle: LineStyles.SOLID,
+        lineWidth: 1,
+        lineColor: new Color('RGB(0,0,0)'),
+        fillColor: new Color('RGB(255,255,255)')
+      } as Level)
     }
   },
 
@@ -86,6 +97,11 @@ export default {
     },
 
     SORT_LEVELS({commit}) {
+      commit('SORT_LEVELS')
+    },
+
+    ADD_LEVEL({commit}) {
+      commit('ADD_LEVEL')
       commit('SORT_LEVELS')
     }
   },

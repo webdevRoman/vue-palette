@@ -46,7 +46,7 @@
         <Button label="Отменить" @click="deleteMode = false"/>
       </div>
       <div class="controls flex-25" v-else>
-        <Button label="Добавить уровень"/>
+        <Button label="Добавить уровень" @click="addLevel()"/>
         <Button label="Удалить уровни" @click="deleteMode = true"/>
         <Button label="Сохранить"/>
       </div>
@@ -93,6 +93,10 @@ export default defineComponent({
   },
 
   methods: {
+    addLevel() {
+      this.$store.dispatch('ADD_LEVEL')
+    },
+
     showScaleDialog() {
       this.$store.dispatch('SHOW_SCALE_DIALOG')
     },
