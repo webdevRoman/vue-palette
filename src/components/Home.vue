@@ -15,7 +15,7 @@
       </div>
 
       <div class="home-option">
-        <Button label="Создать палитру" icon="pi pi-plus"/>
+        <Button label="Создать палитру" icon="pi pi-plus" @click="createPalette()"/>
       </div>
     </div>
 
@@ -43,6 +43,10 @@ export default defineComponent({
         return
       }
       await this.$store.dispatch('READ_PALETTE_FROM_FILE', event.files[0])
+      this.$store.dispatch('SHOW_LEVELS_DIALOG')
+    },
+
+    createPalette() {
       this.$store.dispatch('SHOW_LEVELS_DIALOG')
     }
   }
