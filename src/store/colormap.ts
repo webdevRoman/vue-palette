@@ -230,7 +230,7 @@ export default {
                 (leftSliderDot.color.rgbObj.b - rightSliderDot.color.rgbObj.b) * (1 - dotPerCent / 100)
             }
             level[levelColorPropName] = new Color(
-              'RGB(' + r + ',' + g + ',' + b + ')'
+              'RGB(' + r.toFixed(0) + ',' + g.toFixed(0) + ',' + b.toFixed(0) + ')'
             )
           }
         } else if (colormap.type === ColormapTypes.INTERVAL) {

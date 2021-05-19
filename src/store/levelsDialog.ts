@@ -29,8 +29,7 @@ const DEFAULT_PALETTE = {
     id: 5, value: 100, lineStyle: LineStyles.SOLID, lineWidth: 1,
     lineColor: new Color('RGB(0,0,0)'), fillColor: new Color('RGB(255,0,0)')
   }],
-  fileText: `
-lines:type=GRADIENT;preset=CUSTOM
+  fileText: `lines:type=GRADIENT;preset=CUSTOM
 filling:type=GRADIENT;preset=RAINBOW
 value lineStyle lineWidth lineColor fillColor
 0 solid 1 RGB(0,0,0) RGB(153,102,255)
@@ -38,8 +37,7 @@ value lineStyle lineWidth lineColor fillColor
 40 solid 1 RGB(0,0,0) RGB(0,255,0)
 60 solid 1 RGB(0,0,0) RGB(255,255,0)
 80 solid 1 RGB(0,0,0) RGB(255,102,0)
-100 solid 1 RGB(0,0,0) RGB(255,0,0)
-`
+100 solid 1 RGB(0,0,0) RGB(255,0,0)`
 } as Palette
 
 export default {

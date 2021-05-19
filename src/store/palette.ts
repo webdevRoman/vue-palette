@@ -120,7 +120,21 @@ export default {
 
   getters: {
     palette: (state: State) => state.palette,
-    levels: (state: State) => state.palette.levels
+    levels: (state: State) => state.palette.levels,
+    fileText: (state: State) => {
+      let fileText = 'lines:type=' +
+        Object.keys(ColormapTypes).find(key => ColormapTypes[key] === state.palette.linesColormapType) +
+        ';preset=' +
+        Object.keys(ColormapPresets).find(key => ColormapPresets[key] === state.palette.linesColormapPreset) +
+        '\nfilling:type=' +
+        Object.keys(ColormapTypes).find(key => ColormapTypes[key] === state.palette.fillingColormapType) +
+        ';preset=' +
+        Object.keys(ColormapPresets).find(key => ColormapPresets[key] === state.palette.fillingColormapPreset) +
+        '\nvalue lineStyle lineWidth lineColor fillColor\n'
+      state.palette.levels.forEach(level => fileText +=
+        `${level.value} ${level.lineStyle} ${level.lineWidth} ${level.lineColor.rgb} ${level.fillColor.rgb}\n`)
+      return fileText
+    }
   }
 
 }

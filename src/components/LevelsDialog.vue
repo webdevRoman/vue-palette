@@ -48,7 +48,7 @@
       <div class="controls flex-25" v-else>
         <Button label="Добавить уровень" @click="addLevel()"/>
         <Button label="Удалить уровни" @click="deleteMode = true"/>
-        <Button label="Сохранить"/>
+        <Button label="Сохранить" @click="downloadPalette()"/>
       </div>
 
     </div>
@@ -105,6 +105,15 @@ export default defineComponent({
     deleteLevels() {
       this.$store.dispatch('DELETE_LEVELS', this.selectedLevels)
       this.exitDeleteMode()
+    },
+
+    downloadPalette() {
+      const fileText = this.$store.getters.fileText
+      const blob = new Blob([fileText], {type: 'text/plain'})
+      const link = document.createElement('a')
+      link.setAttribute('href', URL.createObjectURL(blob))
+      link.setAttribute('download', 'palette.txt')
+      link.click()
     },
 
     showScaleDialog() {
