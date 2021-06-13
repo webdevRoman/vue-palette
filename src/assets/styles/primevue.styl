@@ -1,0 +1,39 @@
+@import './vars'
+
+.dialog
+  &-xl.p-dialog
+    width 90%
+  &-md.p-dialog
+    width 600px
+
+  &-levels.p-dialog-maximized
+    max-width: none
+
+  &-line .p-dropdown-label
+    width 175px
+
+  &-colormap
+    .vue-slider-rail
+      background-color rgba(#000, 0.3)
+    .slider-deleting
+      .vue-slider-dot, .slider-dot, .slider-dot__shadow
+        transition none !important
+
+.p-float-label
+  margin-top 25px
+
+.cell
+  .p-colorpicker-preview
+    width 100%
+
+.level
+  &-value
+    &__input
+      max-width 100%
+      .p-inputnumber-input
+        max-width 100%
+        text-align center
+
+.input_wrong .p-inputnumber-input
+  border 1px solid $danger-color
+  box-shadow 0 0 0 0.2rem rgba($danger-color, 0.5)
